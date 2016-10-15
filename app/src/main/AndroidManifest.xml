@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sourmilq.sourmilq">
 
@@ -30,10 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ItemsActivity"
-            android:label="@string/title_activity_items"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="Items"> <!-- TODO make string resource -->
         </activity>
 
     </application>
