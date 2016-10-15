@@ -30,6 +30,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ItemsActivity"
+            android:label="Items"> <!-- TODO make string resource -->
+        </activity>
+
     </application>
 
 
