@@ -10,7 +10,7 @@ public class Model {
 
     private ArrayList<Item> groceryItems;
     private ArrayList<Item> pantryItems;
-
+    private String token;
 
     private Model() {
         groceryItems =  new ArrayList<>();
@@ -22,6 +22,10 @@ public class Model {
             instance = new Model();
         }
         return instance;
+    }
+
+    public boolean hasValidToken(){
+        return token != null;
     }
 
     public ArrayList<Item> getGroceryItems() {
@@ -40,4 +44,11 @@ public class Model {
         this.pantryItems = pantryItems;
     }
 
+    public String getToken(){
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }
