@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SourMilq</string>
     <string name="title_activity_items">ItemsActivity</string>
+    <string name="signup_activity_title">Sign Up</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
