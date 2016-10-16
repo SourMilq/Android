@@ -1,15 +1,26 @@
 package com.sourmilq.sourmilq.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.plus.PlusOneButton;
+import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
 import com.sourmilq.sourmilq.R;
+
+import java.util.ArrayList;
 
 /**
  * A fragment with a Google +1 button.
@@ -34,6 +45,10 @@ public class GroceryListItemsFragment extends Fragment {
     private PlusOneButton mPlusOneButton;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView mRecyclerView;
+    private GroceryItemListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public GroceryListItemsFragment() {
         // Required empty public constructor
@@ -72,8 +87,53 @@ public class GroceryListItemsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_grocery_list_items, container, false);
 
-        //Find the +1 button
-        mPlusOneButton = (PlusOneButton) view.findViewById(R.id.plus_one_button);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        ArrayList<String> myDataset = new ArrayList<>();
+        myDataset.add("snow peas");
+        myDataset.add("bananas");
+        myDataset.add("self-worth");
+
+        // specify an adapter (see also next example)
+        mAdapter = new GroceryItemListAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
+
+        Button addGroceryItemButton = (Button) view.findViewById(R.id.add_grocery_item_button);
+        addGroceryItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                alertDialog.setTitle("Add Item");
+                alertDialog.setMessage("Item name:");
+
+                final EditText input = new EditText(getActivity());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+
+                alertDialog.setPositiveButton("Add Item",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAdapter.add(input.getText().toString());
+                        }
+                    });
+
+                alertDialog.setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                alertDialog.show();
+            }
+        });
 
         return view;
     }
@@ -83,7 +143,7 @@ public class GroceryListItemsFragment extends Fragment {
         super.onResume();
 
         // Refresh the state of the +1 button each time the activity receives focus.
-        mPlusOneButton.initialize(PLUS_ONE_URL, PLUS_ONE_REQUEST_CODE);
+//        mPlusOneButton.initialize(PLUS_ONE_URL, PLUS_ONE_REQUEST_CODE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
