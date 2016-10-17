@@ -1,5 +1,6 @@
 package com.sourmilq.sourmilq.Adapters;
 
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -21,8 +23,8 @@ import java.util.Observer;
  */
 
 public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer {
-    private ArrayList<String> mDataset;
-    private Model mModel;
+    private onCallCompleted listener;
+    private ArrayList<Item> mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
@@ -39,26 +41,47 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         @Override
         public boolean onLongClick(View view) {
             int position = getLayoutPosition();
-            mAdapter.remove(position);
-            // model.deleteItem(); // TODO
+//            mAdapter.remove(position);
+
+            Model.getInstance().deleteItem(mAdapter.getDataset().get(position),mAdapter.getListener());
             return true;
         }
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        Model model = Model.class.cast(observable);
-        for (Item item : model.getGroceryItems()) {
-            mDataset.add(item.getName());
-        }
+//        Model model = Model.class.cast(observable);
+//        for (Item item : model.getGroceryItems()) {
+//            mDataset.add(item.getName());
+//        }
+        mDataset = Model.getInstance().getGroceryItems();
+//        final Handler mHandler = new Handler();
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run () {
+//                // Perform long-running task here
+//                // (like audio buffering).
+//                // you may want to update some progress
+//                // bar every second, so use handler:
+//                mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run () {
+//                        // make operation on UI - on example
+//                        // on progress bar.
+//                    }
+//                });
+//            }
+//        }).start();
         notifyDataSetChanged();
     }
 
-    public GroceryItemListAdapter(Model model) {
+    public GroceryItemListAdapter(onCallCompleted listener) {
+        this.listener = listener;
         mDataset = new ArrayList<>();
-        mModel = model;
+        Model model = Model.getInstance();
         model.addObserver(this);
-        update(model, null);
+//        update(model, null);
     }
 
     @Override
@@ -71,7 +94,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset.get(position));
+        holder.mTextView.setText(mDataset.get(position).getName());
     }
 
     @Override
@@ -79,13 +102,21 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         return mDataset.size();
     }
 
-    public void remove(int position) {
-        mDataset.remove(position);
-        notifyDataSetChanged();
+//    public void remove(int position) {
+//        mDataset.remove(position);
+//        notifyDataSetChanged();
+//    }
+//
+//    public void add(String newItem) {
+//        mDataset.add(new Item(newItem));
+//        notifyDataSetChanged();
+//    }
+
+    public ArrayList<Item> getDataset() {
+        return mDataset;
     }
 
-    public void add(String newItem) {
-        mDataset.add(newItem);
-        notifyDataSetChanged();
+    public onCallCompleted getListener() {
+        return listener;
     }
 }

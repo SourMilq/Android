@@ -23,8 +23,10 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
     private Model model;
     private Long listId;
     private Item item;
+    private onCallCompleted listener;
 
-    public AddDeleteItem(ActionType actionType, Long listId, Item item) {
+    public AddDeleteItem(ActionType actionType, Long listId, Item item, onCallCompleted listener) {
+        this.listener = listener;
         this.actionType = actionType;
         this.listId = listId;
         this.item = item;
@@ -39,7 +41,7 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("item",item.getJson());
-                    APIHelper.addItem(params[0],listId, model.getToken());
+                    APIHelper.addItem(jsonObject,listId, model.getToken());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -47,16 +49,21 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
                 }
             } else if (actionType == ActionType.DELETE) {
                 try {
-                    APIHelper.deleteItem(model.getToken(),item.getId(),model.getGroceryListId());
+                    APIHelper.deleteItem(model.getToken(), item.getId(), model.getGroceryListId());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            model.updateGroceryList();
 //        }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        model.updateGroceryList();
+        super.onPostExecute(aVoid);
     }
 }
 

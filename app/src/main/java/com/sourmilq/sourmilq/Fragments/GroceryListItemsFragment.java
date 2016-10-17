@@ -20,8 +20,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.plus.PlusOneButton;
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
+import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import java.util.ArrayList;
 
@@ -33,7 +35,7 @@ import java.util.ArrayList;
  * Use the {@link GroceryListItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroceryListItemsFragment extends Fragment {
+public class GroceryListItemsFragment extends Fragment implements onCallCompleted {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -97,7 +99,7 @@ public class GroceryListItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(Model.getInstance());
+        mAdapter = new GroceryItemListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -121,7 +123,8 @@ public class GroceryListItemsFragment extends Fragment {
                 alertDialog.setPositiveButton("Add Item",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                mAdapter.add(input.getText().toString());
+//                                mAdapter.add(input.getText().toString());
+                                Model.getInstance().addItem(new Item(input.getText().toString()),GroceryListItemsFragment.this);
                             }
                         });
 
@@ -202,6 +205,11 @@ public class GroceryListItemsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onTaskCompleted(String token) {
+        Model.getInstance().updateGroceryList();
     }
 
     /**

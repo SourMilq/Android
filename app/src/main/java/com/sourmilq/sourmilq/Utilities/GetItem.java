@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by ajanthan on 2016-10-16.
  */
 
-public class GetItem extends AsyncTask<JSONObject, Void, Void> {
+public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     private Model model;
 
     public GetItem(){
@@ -22,13 +22,19 @@ public class GetItem extends AsyncTask<JSONObject, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(JSONObject... params) {
+    protected ArrayList<Item> doInBackground(JSONObject... params) {
         ArrayList<Item> items;
         Log.e("TESTING: ","test");
         items = APIHelper.getListItems(model.getToken(),model.getGroceryListId());
-        model.setGroceryItems(items);
+
         Log.e("TESTING: ",items.size()+"'");
-        return null;
+        return items;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<Item> a) {
+        model.setGroceryItems(a);
+        super.onPostExecute(a);
     }
 }
 

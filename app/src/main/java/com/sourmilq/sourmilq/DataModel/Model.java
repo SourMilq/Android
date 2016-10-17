@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.sourmilq.sourmilq.Utilities.AddDeleteItem;
 import com.sourmilq.sourmilq.Utilities.GetItem;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +51,8 @@ public class Model extends Observable {
 
     public void setGroceryItems(ArrayList<Item> groceryItems) {
         this.groceryItems = groceryItems;
+        setChanged();
+        notifyObservers();
     }
 
     public ArrayList<Item> getPantryItems() {
@@ -75,16 +78,17 @@ public class Model extends Observable {
 
     public void setListIds(long id){
         groceryListId  =id;
+        updateGroceryList();
         Log.e("IDS", groceryListId +"");
     }
 
-    public void addItem(Item item){
-        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.ADD,groceryListId, item);
+    public void addItem(Item item,onCallCompleted listener){
+        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.ADD,groceryListId, item, listener);
         addDeleteItem.execute();
     }
 
-    public void deleteItem(Item item){
-        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE,groceryListId, item);
+    public void deleteItem(Item item, onCallCompleted listener){
+        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE,groceryListId, item, listener);
         addDeleteItem.execute();
     }
 }
