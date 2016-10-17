@@ -1,43 +1,56 @@
 package com.sourmilq.sourmilq.Utilities;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.net.URL;
 
 /**
- * Created by ajanthan on 16-10-15.
+ * Created by ajanthan on 2016-10-16.
  */
-public class Authentication {
 
-    private static StringBuilder sb = new StringBuilder();
-    private static String domain = "http://4dd95a2a.ngrok.io";
+public class Authentication extends AsyncTask<JSONObject, Void, String>{
+    private onCallCompleted listener;
+    public enum AuthType {LOGIN, SIGNUP}
+    private AuthType  authType;
+    private Model model;
 
-    public static String signup(JSONObject jsonObject) throws IOException, JSONException {
-        String endpointDomain= domain+ "/v1/user/create";
-        try {
-            //constants
-            URL url = new URL(endpointDomain);
-            String result = APIHelper.postRequest(jsonObject,url);
-            JSONObject jsonObj = new JSONObject(result);
-            return jsonObj.getString("token");
-
-        } catch (Exception e){
-            return null;
-        }
+    public Authentication(onCallCompleted listener, AuthType authType){
+        this.listener = listener;
+        this.authType = authType;
+        model = Model.getInstance();
     }
 
-    public static String login(JSONObject jsonObject) throws IOException, JSONException {
-            String endpointDomain= domain+ "/v1/user";
+    @Override
+    protected String doInBackground(JSONObject... params) {
+        String result = "";
         try {
-            //constants
-            URL url = new URL(endpointDomain);
-            String result = APIHelper.postRequest(jsonObject,url);
-            JSONObject jsonObj = new JSONObject(result);
-            return jsonObj.getString("token");
-
-        } catch (Exception e){
-            return null;
+            if(params.length>0){
+                Log.e("TOKEN: ",params[0].toString());
+                if(authType == AuthType.LOGIN){
+                    result = APIHelper.login(params[0]);
+                }else if(authType == AuthType.SIGNUP){
+                    result = APIHelper.signup(params[0]);
+                }
+                Log.e("TOKEN: ",result);
+                model.setToken(result);
+                model.setListIds(APIHelper.getLists(result));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        return result;
+    }
+    @Override
+    protected void onPostExecute(String s) {
+        listener.onTaskCompleted(s);
+        super.onPostExecute(s);
     }
 }
+
