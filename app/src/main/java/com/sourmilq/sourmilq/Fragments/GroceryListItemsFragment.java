@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.plus.PlusOneButton;
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
 
 import java.util.ArrayList;
@@ -93,19 +96,17 @@ public class GroceryListItemsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<String> myDataset = new ArrayList<>();
-        myDataset.add("snow peas");
-        myDataset.add("bananas");
-        myDataset.add("self-worth");
-
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(myDataset);
+        mAdapter = new GroceryItemListAdapter(Model.getInstance());
         mRecyclerView.setAdapter(mAdapter);
 
-        Button addGroceryItemButton = (Button) view.findViewById(R.id.add_grocery_item_button);
-        addGroceryItemButton.setOnClickListener(new View.OnClickListener() {
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 alertDialog.setTitle("Add Item");
                 alertDialog.setMessage("Item name:");
@@ -118,22 +119,55 @@ public class GroceryListItemsFragment extends Fragment {
                 alertDialog.setView(input);
 
                 alertDialog.setPositiveButton("Add Item",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mAdapter.add(input.getText().toString());
-                        }
-                    });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                mAdapter.add(input.getText().toString());
+                            }
+                        });
 
                 alertDialog.setNegativeButton("Cancel",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
 
                 alertDialog.show();
             }
         });
+
+//        Button addGroceryItemButton = (Button) view.findViewById(R.id.add_grocery_item_button);
+//        addGroceryItemButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+//                alertDialog.setTitle("Add Item");
+//                alertDialog.setMessage("Item name:");
+//
+//                final EditText input = new EditText(getActivity());
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.MATCH_PARENT,
+//                        LinearLayout.LayoutParams.MATCH_PARENT);
+//                input.setLayoutParams(lp);
+//                alertDialog.setView(input);
+//
+//                alertDialog.setPositiveButton("Add Item",
+//                    new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mAdapter.add(input.getText().toString());
+//                        }
+//                    });
+//
+//                alertDialog.setNegativeButton("Cancel",
+//                    new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//
+//                alertDialog.show();
+//            }
+//        });
 
         return view;
     }

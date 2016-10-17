@@ -8,16 +8,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourmilq.sourmilq.DataModel.Item;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Philip on 2016-10-15.
  */
 
-public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> {
+public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer {
     private ArrayList<String> mDataset;
+    private Model mModel;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
@@ -35,12 +40,25 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         public boolean onLongClick(View view) {
             int position = getLayoutPosition();
             mAdapter.remove(position);
+            // model.deleteItem(); // TODO
             return true;
         }
     }
 
-    public GroceryItemListAdapter(ArrayList<String> myDataset) {
-        mDataset = myDataset;
+    @Override
+    public void update(Observable observable, Object data) {
+        Model model = Model.class.cast(observable);
+        for (Item item : model.getGroceryItems()) {
+            mDataset.add(item.getName());
+        }
+        notifyDataSetChanged();
+    }
+
+    public GroceryItemListAdapter(Model model) {
+        mDataset = new ArrayList<>();
+        mModel = model;
+        model.addObserver(this);
+        update(model, null);
     }
 
     @Override
