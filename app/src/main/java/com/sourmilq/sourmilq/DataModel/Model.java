@@ -9,11 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Created by ajanthan on 16-10-15.
  */
-public class Model {
+public class Model extends Observable {
     private static Model instance = null;
 
     private ArrayList<Item> groceryItems;
