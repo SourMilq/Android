@@ -139,6 +139,15 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
             }
         });
 
+        FloatingActionButton updateButton = (FloatingActionButton) view.findViewById(R.id.update_button);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Model.getInstance().updateGroceryList();
+                Snackbar.make(v, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        });
+
 //        Button addGroceryItemButton = (Button) view.findViewById(R.id.add_grocery_item_button);
 //        addGroceryItemButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
