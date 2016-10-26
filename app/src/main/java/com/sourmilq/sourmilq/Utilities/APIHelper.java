@@ -20,7 +20,7 @@ import java.util.Map;
 public class APIHelper {
 
     private static StringBuilder sb = new StringBuilder();
-    private static String domain = "http://f01e50c5.ngrok.io";
+    private static String domain = "http://31fefb5b.ngrok.io";
 
     public static String signup(JSONObject jsonObject) throws IOException, JSONException {
         String endpointDomain = domain + "/v1/user/create";

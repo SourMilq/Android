@@ -102,7 +102,6 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
         mAdapter = new GroceryItemListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
-
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
