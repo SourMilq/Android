@@ -36,27 +36,27 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
     @Override
     protected Void doInBackground(JSONObject... params) {
 
-//        if (params.length > 0) {
-            if (actionType == ActionType.ADD) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("item",item.getJson());
-                    APIHelper.addItem(jsonObject,listId, model.getToken());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else if (actionType == ActionType.DELETE) {
-                try {
-                    APIHelper.deleteItem(model.getToken(), item.getId(), model.getGroceryListId());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        //Todo: add parameter checking
+
+        if (actionType == ActionType.ADD) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("item", item.getJson());
+                APIHelper.addItem(jsonObject, listId, model.getToken());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-//        }
+        } else if (actionType == ActionType.DELETE) {
+            try {
+                APIHelper.deleteItem(model.getToken(), item.getId(), model.getGroceryListId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 

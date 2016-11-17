@@ -26,7 +26,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.splash_screen_activity);
         model = Model.getInstance();
 
-        if(model.getToken()!=null){
+        if (model.getToken() != null) {
             mHandler = new Handler();
             mHandler.postDelayed(mUpdateTimeTask, 2000);
         }

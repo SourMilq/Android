@@ -41,11 +41,11 @@ public class SignUpActivity extends Activity implements onCallCompleted {
         setContentView(R.layout.signup_screen_activity);
         model = Model.getInstance();
 
-        firstNameET = (EditText)findViewById(R.id.firstName);
-        lastNameET = (EditText)findViewById(R.id.lastName);
-        emailET = (EditText)findViewById(R.id.email);
-        usernameET = (EditText)findViewById(R.id.username);
-        passwordET = (EditText)findViewById(R.id.password);
+        firstNameET = (EditText) findViewById(R.id.firstName);
+        lastNameET = (EditText) findViewById(R.id.lastName);
+        emailET = (EditText) findViewById(R.id.email);
+        usernameET = (EditText) findViewById(R.id.username);
+        passwordET = (EditText) findViewById(R.id.password);
 
         registerBtn = (Button) findViewById(R.id.register);
 
@@ -54,11 +54,11 @@ public class SignUpActivity extends Activity implements onCallCompleted {
             public void onClick(View v) {
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("first_name",firstNameET.getText());
-                    jsonObject.put("last_name",lastNameET.getText());
-                    jsonObject.put("email",emailET.getText());
-                    jsonObject.put("username",usernameET.getText());
-                    jsonObject.put("password",passwordET.getText());
+                    jsonObject.put("first_name", firstNameET.getText());
+                    jsonObject.put("last_name", lastNameET.getText());
+                    jsonObject.put("email", emailET.getText());
+                    jsonObject.put("username", usernameET.getText());
+                    jsonObject.put("password", passwordET.getText());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

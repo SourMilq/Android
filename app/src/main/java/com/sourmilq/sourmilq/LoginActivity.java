@@ -38,8 +38,8 @@ public class LoginActivity extends Activity implements onCallCompleted {
         setContentView(R.layout.login_screen_activity);
         model = Model.getInstance();
 
-        usernameET = (EditText)findViewById(R.id.username);
-        passwordET = (EditText)findViewById(R.id.password);
+        usernameET = (EditText) findViewById(R.id.username);
+        passwordET = (EditText) findViewById(R.id.password);
         loginBtn = (Button) findViewById(R.id.login);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -47,8 +47,8 @@ public class LoginActivity extends Activity implements onCallCompleted {
             public void onClick(View v) {
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("username",usernameET.getText());
-                    jsonObject.put("password",passwordET.getText());
+                    jsonObject.put("username", usernameET.getText());
+                    jsonObject.put("password", passwordET.getText());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -61,10 +61,10 @@ public class LoginActivity extends Activity implements onCallCompleted {
     @Override
     public void onTaskCompleted(String token) {
         model.setToken(token);
-        if(token==null || token.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             Toast.makeText(getApplicationContext(), "login failure",
                     Toast.LENGTH_LONG).show();
-        }else{
+        } else {
             Toast.makeText(getApplicationContext(), "login success",
                     Toast.LENGTH_LONG).show();
         }

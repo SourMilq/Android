@@ -17,14 +17,14 @@ import java.util.ArrayList;
 public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     private Model model;
 
-    public GetItem(){
+    public GetItem() {
         model = Model.getInstance();
     }
 
     @Override
     protected ArrayList<Item> doInBackground(JSONObject... params) {
         ArrayList<Item> items;
-        items = APIHelper.getListItems(model.getToken(),model.getGroceryListId());
+        items = APIHelper.getListItems(model.getToken(), model.getGroceryListId());
         return items;
     }
 

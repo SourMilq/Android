@@ -58,7 +58,7 @@ public class APIHelper {
     }
 
     public static String deleteItem(String token, long id, long listId) throws IOException, JSONException {
-        String endpointDomain = domain + "/v1/list/"+listId+"/item/"+id;
+        String endpointDomain = domain + "/v1/list/" + listId + "/item/" + id;
         try {
             //constants
             URL url = new URL(endpointDomain);

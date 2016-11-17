@@ -147,39 +147,6 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
             }
         });
 
-//        Button addGroceryItemButton = (Button) view.findViewById(R.id.add_grocery_item_button);
-//        addGroceryItemButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-//                alertDialog.setTitle("Add Item");
-//                alertDialog.setMessage("Item name:");
-//
-//                final EditText input = new EditText(getActivity());
-//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.MATCH_PARENT,
-//                        LinearLayout.LayoutParams.MATCH_PARENT);
-//                input.setLayoutParams(lp);
-//                alertDialog.setView(input);
-//
-//                alertDialog.setPositiveButton("Add Item",
-//                    new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            mAdapter.add(input.getText().toString());
-//                        }
-//                    });
-//
-//                alertDialog.setNegativeButton("Cancel",
-//                    new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//                alertDialog.show();
-//            }
-//        });
-
         return view;
     }
 

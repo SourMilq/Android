@@ -43,7 +43,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             int position = getLayoutPosition();
 //            mAdapter.remove(position);
 
-            Model.getInstance().deleteItem(mAdapter.getDataset().get(position),mAdapter.getListener());
+            Model.getInstance().deleteItem(mAdapter.getDataset().get(position), mAdapter.getListener());
             return true;
         }
     }
@@ -55,24 +55,6 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 //            mDataset.add(item.getName());
 //        }
         mDataset = Model.getInstance().getGroceryItems();
-//        final Handler mHandler = new Handler();
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run () {
-//                // Perform long-running task here
-//                // (like audio buffering).
-//                // you may want to update some progress
-//                // bar every second, so use handler:
-//                mHandler.post(new Runnable() {
-//                    @Override
-//                    public void run () {
-//                        // make operation on UI - on example
-//                        // on progress bar.
-//                    }
-//                });
-//            }
-//        }).start();
         notifyDataSetChanged();
     }
 

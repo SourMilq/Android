@@ -25,15 +25,15 @@ public class HttpRequestHelper {
         StringBuilder out = new StringBuilder();
         try {
             conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout( 10000 /*milliseconds*/ );
-            conn.setConnectTimeout( 15000 /* milliseconds */ );
+            conn.setReadTimeout(10000 /*milliseconds*/);
+            conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setFixedLengthStreamingMode(message.getBytes().length);
             conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-            if(!token.isEmpty()) {
+            if (!token.isEmpty()) {
                 conn.setRequestProperty("Authorization", "Bearer " + token);
             }
             conn.connect();
@@ -57,7 +57,7 @@ public class HttpRequestHelper {
         StringBuilder result = new StringBuilder();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization","Bearer "+token);
+        conn.setRequestProperty("Authorization", "Bearer " + token);
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
         while ((line = rd.readLine()) != null) {
@@ -71,7 +71,7 @@ public class HttpRequestHelper {
         StringBuilder result = new StringBuilder();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("DELETE");
-        conn.setRequestProperty("Authorization","Bearer "+token);
+        conn.setRequestProperty("Authorization", "Bearer " + token);
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
         while ((line = rd.readLine()) != null) {
