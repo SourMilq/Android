@@ -11,7 +11,7 @@ import java.net.URL;
 public class Authentication {
 
     private static StringBuilder sb = new StringBuilder();
-    private static String domain = "http://4dd95a2a.ngrok.io";
+    private static String domain = "http://ec2-35-163-95-143.us-west-2.compute.amazonaws.com:3000/";
 
     public static String signup(JSONObject jsonObject) throws IOException, JSONException {
         String endpointDomain= domain+ "/v1/user/create";
