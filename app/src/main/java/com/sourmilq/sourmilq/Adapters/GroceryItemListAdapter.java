@@ -2,6 +2,7 @@ package com.sourmilq.sourmilq.Adapters;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -27,12 +28,14 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
     private onCallCompleted listener;
     private ArrayList<Item> mDataset;
     private Model model;
+    private View containerView;
 
-    public GroceryItemListAdapter(Context context) {
+    public GroceryItemListAdapter(Context context, View containerView) {
         model = Model.getInstance(context);
         mDataset = model.getGroceryItems();
         model.addObserver(this);
 //        update(model, null);
+        this.containerView = containerView;
     }
 
     @Override
@@ -88,6 +91,11 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         Item itemToRemove = mDataset.get(position);
         remove(position);
         model.deleteItem(itemToRemove);
+        Snackbar.make(
+                containerView,
+                "Moved " + itemToRemove.getName() + " to pantry... !!!PANTRY NOT IMPLEMENTED YET",
+                Snackbar.LENGTH_LONG
+        ).show();
     }
 
     public ArrayList<Item> getDataset() {

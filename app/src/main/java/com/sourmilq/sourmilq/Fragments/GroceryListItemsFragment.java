@@ -99,7 +99,7 @@ public class GroceryListItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext());
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
