@@ -1,7 +1,5 @@
 package com.sourmilq.sourmilq.Utilities;
 
-import android.util.Log;
-
 import com.sourmilq.sourmilq.DataModel.Item;
 
 import org.json.JSONArray;
@@ -20,7 +18,7 @@ import java.util.Map;
 public class APIHelper {
 
     private static StringBuilder sb = new StringBuilder();
-    private static String domain = "http://31fefb5b.ngrok.io";
+    private static String domain = "http://ec2-35-163-95-143.us-west-2.compute.amazonaws.com:3000";
 
     public static String signup(JSONObject jsonObject) throws IOException, JSONException {
         String endpointDomain = domain + "/v1/user/create";
@@ -30,7 +28,6 @@ public class APIHelper {
             String result = HttpRequestHelper.postRequest("", jsonObject, url);
             JSONObject jsonObj = new JSONObject(result);
             return jsonObj.getString("token");
-
         } catch (Exception e) {
             return null;
         }
@@ -41,7 +38,6 @@ public class APIHelper {
         try {
             //constants
             URL url = new URL(endpointDomain);
-            Log.e("TOKEN: ", endpointDomain);
             String result = HttpRequestHelper.postRequest("", jsonObject, url);
             JSONObject jsonObj = new JSONObject(result);
             return jsonObj.getString("token");
@@ -56,8 +52,6 @@ public class APIHelper {
         try {
             //constants
             URL url = new URL(endpointDomain);
-            Log.e("ADD1: ", endpointDomain);
-            Log.e("ADD1: ", jsonObject.toString());
             HttpRequestHelper.postRequest(token, jsonObject, url);
         } catch (Exception e) {
         }
@@ -70,7 +64,6 @@ public class APIHelper {
             URL url = new URL(endpointDomain);
             HttpRequestHelper.deleteRequest(token, url);
             return null;
-
         } catch (Exception e) {
             return null;
         }
@@ -82,9 +75,7 @@ public class APIHelper {
         try {
             //constants
             URL url = new URL(endpointDomain);
-            Log.e("IDS", "test");
             String result = HttpRequestHelper.getRequest(token, url);
-            Log.e("IDS", result);
             JSONObject jsonObj = new JSONObject(result);
             JSONArray lists = (JSONArray) jsonObj.get("lists");
             for (int i = 0; i < lists.length(); i++) {
@@ -93,9 +84,7 @@ public class APIHelper {
                     return list.getLong("id");
                 }
             }
-
             return 0;
-
         } catch (Exception e) {
             return 0;
         }
@@ -103,13 +92,10 @@ public class APIHelper {
 
     public static ArrayList<Item> getListItems(String token, long listId) {
         String endpointDomain = domain + "/v1/list/" + listId;
-
-        Log.e("TESTING: ", listId + "");
         try {
             //constants
             URL url = new URL(endpointDomain);
             String result = HttpRequestHelper.getRequest(token, url);
-            Log.e("TESTING: ", result);
             return parseItems(result);
         } catch (Exception e) {
             return null;

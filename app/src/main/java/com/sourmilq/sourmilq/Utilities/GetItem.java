@@ -24,10 +24,7 @@ public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     @Override
     protected ArrayList<Item> doInBackground(JSONObject... params) {
         ArrayList<Item> items;
-        Log.e("TESTING: ","test");
         items = APIHelper.getListItems(model.getToken(),model.getGroceryListId());
-
-        Log.e("TESTING: ",items.size()+"'");
         return items;
     }
 

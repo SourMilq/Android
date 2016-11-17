@@ -30,13 +30,11 @@ public class Authentication extends AsyncTask<JSONObject, Void, String>{
         String result = "";
         try {
             if(params.length>0){
-                Log.e("TOKEN: ",params[0].toString());
                 if(authType == AuthType.LOGIN){
                     result = APIHelper.login(params[0]);
                 }else if(authType == AuthType.SIGNUP){
                     result = APIHelper.signup(params[0]);
                 }
-                Log.e("TOKEN: ",result);
                 model.setToken(result);
                 model.setListIds(APIHelper.getLists(result));
             }

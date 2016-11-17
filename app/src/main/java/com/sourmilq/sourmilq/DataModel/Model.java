@@ -79,7 +79,6 @@ public class Model extends Observable {
     public void setListIds(long id){
         groceryListId  =id;
         updateGroceryList();
-        Log.e("IDS", groceryListId +"");
     }
 
     public void addItem(Item item,onCallCompleted listener){
