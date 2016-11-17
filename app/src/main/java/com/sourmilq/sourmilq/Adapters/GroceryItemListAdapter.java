@@ -22,9 +22,10 @@ import java.util.Observer;
  * Created by Philip on 2016-10-15.
  */
 
-public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer {
+public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer, ItemTouchHelperAdapter {
     private onCallCompleted listener;
     private ArrayList<Item> mDataset;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
@@ -93,6 +94,12 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 //        mDataset.add(new Item(newItem));
 //        notifyDataSetChanged();
 //    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        mDataset.remove(position);
+        notifyItemRemoved(position);
+    }
 
     public ArrayList<Item> getDataset() {
         return mDataset;
