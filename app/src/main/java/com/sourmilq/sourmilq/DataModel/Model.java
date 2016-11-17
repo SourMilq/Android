@@ -4,12 +4,9 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.sourmilq.sourmilq.Utilities.AddDeleteItem;
-import com.sourmilq.sourmilq.Utilities.GetItem;
-import com.sourmilq.sourmilq.callBacks.onCallCompleted;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
+import com.sourmilq.sourmilq.Tasks.GetItem;
+import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,6 +20,7 @@ import java.util.Observable;
  * Created by ajanthan on 16-10-15.
  */
 public class Model extends Observable {
+    private static final String className="Model";
     private static Model instance = null;
 
     private ArrayList<Item> groceryItems;
@@ -30,6 +28,7 @@ public class Model extends Observable {
     private long groceryListId;
     private long pantryListId;
     private String token;
+    private Context context;
 
     private Model() {
         groceryItems =  new ArrayList<>();
@@ -37,22 +36,27 @@ public class Model extends Observable {
     }
 
     public static Model getInstance(Context context) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Model();
+            instance.context = context;
             try {
                 FileInputStream fis = context.openFileInput(PersistentData.PERTISTENT_DATA_FILENAME);
                 ObjectInputStream is = new ObjectInputStream(fis);
                 PersistentData pData = (PersistentData) is.readObject();
                 is.close();
                 fis.close();
-                instance.setGroceryItems(pData.groceryItems);
-                instance.setPantryItems(pData.pantryItems);
-                // instance.setGroceryListId(pData.groceryListId);
-                // instance.setPantryListId(pData.pantryListId);
+                if (pData.groceryItems == null) instance.groceryItems = new ArrayList<>();
+                else instance.setGroceryItems(pData.groceryItems);
+                if (pData.pantryItems == null) instance.pantryItems = new ArrayList<>();
+                else instance.setPantryItems(pData.pantryItems);
+                instance.setGroceryListId(pData.groceryListId);
+                instance.setPantryListId(pData.pantryListId);
                 instance.setToken(pData.token);
+
             } catch (IOException | ClassNotFoundException e) {
-                Toast.makeText(context, "Unable to open local persistent data", Toast.LENGTH_LONG)
-                        .show();
+                e.printStackTrace();
+//                Toast.makeText(context, "Unable to open local persistent data", Toast.LENGTH_LONG)
+//                        .show();
             }
         }
         return instance;
@@ -62,20 +66,21 @@ public class Model extends Observable {
         return token != null;
     }
 
-    public static void saveData(Context context) {
+    public static void saveData() {
         if (instance == null) return;
 
         PersistentData pData = new PersistentData(instance);
         try {
-            FileOutputStream fos = context.openFileOutput(
+            FileOutputStream fos = instance.context.openFileOutput(
                     PersistentData.PERTISTENT_DATA_FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(pData);
             os.close();
             fos.close();
+            Log.e(className, "saved data");
         } catch (IOException e) {
-            Toast.makeText(context, "Unable to save local persistent data", Toast.LENGTH_LONG)
-                    .show();
+            Log.e(className, "couldn't save data");
+            e.printStackTrace();
         }
     }
 
@@ -84,14 +89,19 @@ public class Model extends Observable {
     }
 
     public void updateGroceryList(){
-        GetItem getItem = new GetItem();
-        getItem.execute();
+        if(NetworkUtil.isConnected(context)) {
+            GetItem getItem = new GetItem(this);
+            getItem.execute();
+            saveData();
+        }
     }
 
     public void setGroceryItems(ArrayList<Item> groceryItems) {
         this.groceryItems = groceryItems;
+        Log.e("blah", "overridden");
         setChanged();
         notifyObservers();
+        saveData();
     }
 
     public ArrayList<Item> getPantryItems() {
@@ -108,25 +118,41 @@ public class Model extends Observable {
 
     public void setToken(String token) {
         this.token = token;
+        saveData();
     }
-
 
     public Long getGroceryListId(){
         return groceryListId;
     }
 
     public void setListIds(long id){
-        groceryListId  =id;
-        updateGroceryList();
+        if(NetworkUtil.isConnected(context)) {
+            groceryListId = id;
+            updateGroceryList();
+        }
     }
 
-    public void addItem(Item item,onCallCompleted listener){
-        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.ADD,groceryListId, item, listener);
-        addDeleteItem.execute();
+    public void addItem(Item item){
+        if(NetworkUtil.isConnected(context)) {
+            AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.ADD, groceryListId, item, token);
+            addDeleteItem.execute();
+            updateGroceryList();
+        }
     }
 
-    public void deleteItem(Item item, onCallCompleted listener){
-        AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE,groceryListId, item, listener);
-        addDeleteItem.execute();
+    public void deleteItem(Item item){
+        if(NetworkUtil.isConnected(context)) {
+            AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE, groceryListId, item, token);
+            addDeleteItem.execute();
+            updateGroceryList();
+        }
+    }
+
+    public void setGroceryListId(long groceryListId) {
+        this.groceryListId = groceryListId;
+    }
+
+    public void setPantryListId(long pantryListId) {
+        this.pantryListId = pantryListId;
     }
 }

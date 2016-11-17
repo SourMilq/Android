@@ -24,7 +24,7 @@ import com.sourmilq.sourmilq.callBacks.onCallCompleted;
  * Use the {@link PantryItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PantryItemsFragment extends Fragment implements onCallCompleted {
+public class PantryItemsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -83,7 +83,7 @@ public class PantryItemsFragment extends Fragment implements onCallCompleted {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(this);
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
         return view;
@@ -111,11 +111,6 @@ public class PantryItemsFragment extends Fragment implements onCallCompleted {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onTaskCompleted(String token) {
-        Model.getInstance().updateGroceryList();
     }
 
     /**

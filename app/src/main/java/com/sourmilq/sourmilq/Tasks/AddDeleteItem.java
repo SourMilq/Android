@@ -1,9 +1,10 @@
-package com.sourmilq.sourmilq.Utilities;
+package com.sourmilq.sourmilq.Tasks;
 
 import android.os.AsyncTask;
 
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.Utilities.APIHelper;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import org.json.JSONException;
@@ -20,17 +21,15 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
     public enum ActionType {ADD, DELETE}
 
     private ActionType actionType;
-    private Model model;
     private Long listId;
     private Item item;
-    private onCallCompleted listener;
+    private String token;
 
-    public AddDeleteItem(ActionType actionType, Long listId, Item item, onCallCompleted listener) {
-        this.listener = listener;
+    public AddDeleteItem(ActionType actionType, Long listId, Item item, String token) {
         this.actionType = actionType;
         this.listId = listId;
         this.item = item;
-        model = Model.getInstance();
+        this.token = token;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("item", item.getJson());
-                APIHelper.addItem(jsonObject, listId, model.getToken());
+                APIHelper.addItem(jsonObject, listId, token);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -50,7 +49,7 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
             }
         } else if (actionType == ActionType.DELETE) {
             try {
-                APIHelper.deleteItem(model.getToken(), item.getId(), model.getGroceryListId());
+                APIHelper.deleteItem(token, item.getId(), listId);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -58,12 +57,6 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
             }
         }
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        model.updateGroceryList();
-        super.onPostExecute(aVoid);
     }
 }
 

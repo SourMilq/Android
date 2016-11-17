@@ -11,9 +11,7 @@ public class NetworkUtil {
 
     public enum NetworkStatus {
         TYPE_WIFI, TYPE_MOBILE, TYPE_NOT_CONECTED
-    }
-
-    ;
+    };
 
     public static NetworkStatus getConnectivityStatus(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
