@@ -2,7 +2,6 @@ package com.sourmilq.sourmilq;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -11,21 +10,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
-import com.sourmilq.sourmilq.Utilities.APIHelper;
-import com.sourmilq.sourmilq.Utilities.Authentication;
+import com.sourmilq.sourmilq.Tasks.Authentication;
+import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 /**
  * Created by ajanthan on 16-10-15.
  */
 
 public class SignUpActivity extends Activity implements onCallCompleted {
-    private Handler mHandler;
     private Model model;
 
     private EditText firstNameET;
@@ -39,7 +35,7 @@ public class SignUpActivity extends Activity implements onCallCompleted {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_screen_activity);
-        model = Model.getInstance();
+        model = Model.getInstance(getApplicationContext());
 
         firstNameET = (EditText) findViewById(R.id.firstName);
         lastNameET = (EditText) findViewById(R.id.lastName);
@@ -62,8 +58,13 @@ public class SignUpActivity extends Activity implements onCallCompleted {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Authentication sendDataTask = new Authentication(SignUpActivity.this, Authentication.AuthType.SIGNUP);
-                sendDataTask.execute(jsonObject);
+                if(NetworkUtil.isConnected(getApplicationContext())) {
+                    Authentication sendDataTask = new Authentication(SignUpActivity.this, Authentication.AuthType.SIGNUP, model);
+                    sendDataTask.execute(jsonObject);
+                }else{
+                    Toast.makeText(getApplicationContext(), "No Internet, Unable to Sign Up",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

@@ -3,10 +3,12 @@ package com.sourmilq.sourmilq.DataModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by ajanthan on 16-10-15.
  */
-public class Item {
+public class Item implements Serializable {
     private String name;
     private int numItems;
     private Double price;
