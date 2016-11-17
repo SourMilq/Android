@@ -43,34 +43,42 @@ public class LoginActivity extends Activity implements onCallCompleted {
             @Override
             public void onClick(View v) {
                 JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("username", usernameET.getText());
-                    jsonObject.put("password", passwordET.getText());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(NetworkUtil.isConnected(getApplicationContext())) {
-                    Authentication sendDataTask = new Authentication(LoginActivity.this, Authentication.AuthType.LOGIN, model);
-                    sendDataTask.execute(jsonObject);
+                String username = usernameET.getText().toString();
+                String password = passwordET.getText().toString();
+
+                if(!username.isEmpty() && !password.isEmpty()) {
+                    try {
+                        jsonObject.put("username", username);
+                        jsonObject.put("password", password);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(NetworkUtil.isConnected(getApplicationContext())) {
+                        Authentication sendDataTask = new Authentication(LoginActivity.this, Authentication.AuthType.LOGIN, model);
+                        sendDataTask.execute(jsonObject);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "No Internet, Unable to Login",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
-                    Toast.makeText(getApplicationContext(), "No Internet, Unable to Login",
+                    Toast.makeText(getApplicationContext(), "please enter username and password",
                             Toast.LENGTH_LONG).show();
                 }
+
+
             }
         });
     }
 
     @Override
-    public void onTaskCompleted(String token) {
-        model.setToken(token);
-        if (token == null || token.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "login failure",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "login success",
+    public void onTaskCompleted(boolean success) {
+        if(success){
+            Intent intent = new Intent(LoginActivity.this, ItemsActivity.class);
+            startActivity(intent);
+        }else{
+            Toast.makeText(getApplicationContext(), "Invalid username or password",
                     Toast.LENGTH_LONG).show();
         }
-        Intent intent = new Intent(LoginActivity.this, ItemsActivity.class);
-        startActivity(intent);
+
     }
 }

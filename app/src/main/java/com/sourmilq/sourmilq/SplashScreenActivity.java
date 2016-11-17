@@ -30,8 +30,8 @@ public class SplashScreenActivity extends Activity {
                 Toast.LENGTH_LONG).show();
 
         if (model.getToken() != null) {
-            mHandler = new Handler();
-            mHandler.postDelayed(mUpdateTimeTask, 2000);
+//            mHandler = new Handler();
+//            mHandler.postDelayed(mUpdateTimeTask, 2000);
         }
 
         signUpBtn = (Button) findViewById(R.id.signupBtn);
