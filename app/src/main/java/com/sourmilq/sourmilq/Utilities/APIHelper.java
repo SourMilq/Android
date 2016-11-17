@@ -99,6 +99,7 @@ public class APIHelper {
             String result = HttpRequestHelper.getRequest(token, url);
             return parseItems(result);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -117,6 +118,7 @@ public class APIHelper {
                         item.getLong("id")));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         return items;

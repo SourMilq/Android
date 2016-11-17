@@ -152,6 +152,10 @@ public class Model extends Observable {
         this.groceryListId = groceryListId;
     }
 
+    public long getPantryListId() {
+        return pantryListId;
+    }
+
     public void setPantryListId(long pantryListId) {
         this.pantryListId = pantryListId;
     }

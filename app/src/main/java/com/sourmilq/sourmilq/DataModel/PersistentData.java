@@ -19,8 +19,8 @@ public class PersistentData implements Serializable {
     public PersistentData(Model m) {
         groceryItems = m.getGroceryItems();
         pantryItems = m.getPantryItems();
-        groceryListId = 0; // m.getGroceryListId();
-        pantryListId = 0; // m.getPantryListId();
+        groceryListId = m.getGroceryListId();
+        pantryListId = m.getPantryListId();
         token = m.getToken();
     }
 }
