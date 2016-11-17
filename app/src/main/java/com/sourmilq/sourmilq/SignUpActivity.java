@@ -68,13 +68,14 @@ public class SignUpActivity extends Activity implements onCallCompleted {
             }
         });
     }
-
     @Override
-    public void onTaskCompleted(String token) {
-        model.setToken(token);
-        Toast.makeText(getApplicationContext(), token,
-                Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(SignUpActivity.this, ItemsActivity.class);
-        startActivity(intent);
+    public void onTaskCompleted(boolean success) {
+        if(success){
+            Intent intent = new Intent(SignUpActivity.this, ItemsActivity.class);
+            startActivity(intent);
+        }else{
+            Toast.makeText(getApplicationContext(), "Invalid username or password",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

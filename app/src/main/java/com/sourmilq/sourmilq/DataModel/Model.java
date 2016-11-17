@@ -2,7 +2,6 @@ package com.sourmilq.sourmilq.DataModel;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
@@ -97,11 +96,13 @@ public class Model extends Observable {
     }
 
     public void setGroceryItems(ArrayList<Item> groceryItems) {
-        this.groceryItems = groceryItems;
-        Log.e("blah", "overridden");
-        setChanged();
-        notifyObservers();
-        saveData();
+        if(groceryItems!=null) {
+            this.groceryItems = groceryItems;
+            Log.e("blah", "overridden");
+            setChanged();
+            notifyObservers();
+            saveData();
+        }
     }
 
     public ArrayList<Item> getPantryItems() {
