@@ -1,5 +1,8 @@
 package com.sourmilq.sourmilq.Utilities;
 
+import android.util.Log;
+
+import com.sourmilq.sourmilq.DataModel.HttpObject;
 import com.sourmilq.sourmilq.DataModel.Item;
 
 import org.json.JSONArray;
@@ -7,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,53 +19,79 @@ import java.util.Map;
  */
 public class APIHelper {
 
+    private static String className = "APIHelper";
+
     private static StringBuilder sb = new StringBuilder();
     private static String domain = "http://ec2-35-163-95-143.us-west-2.compute.amazonaws.com:3000";
 
     public static String signup(JSONObject jsonObject) throws IOException, JSONException {
-        String endpointDomain = domain + "/v1/user/create";
+        String url = domain + "/v1/user/create";
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            String result = HttpRequestHelper.postRequest("", jsonObject, url);
-            JSONObject jsonObj = new JSONObject(result);
-            return jsonObj.getString("token");
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
+            httpObject = HttpRequestHelper.postRequest(httpObject);
+            if(httpObject.getHttpCode()==200) {
+                JSONObject jsonObj = new JSONObject(httpObject.getResult());
+                if(!(jsonObj.getString("token") !=null) || !jsonObj.getString("token").isEmpty()) {
+                    return jsonObj.getString("token");
+                }else{
+                    Log.e(className, "Token was not retrieved");
+                }
+
+            }else{
+                Log.e(className, "ErrorCode "+httpObject.getHttpCode()+" was returned");
+            }
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
+        return "";
     }
 
     public static String login(JSONObject jsonObject) throws IOException, JSONException {
-        String endpointDomain = domain + "/v1/user";
+        String url = domain + "/v1/user";
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            String result = HttpRequestHelper.postRequest("", jsonObject, url);
-            JSONObject jsonObj = new JSONObject(result);
-            return jsonObj.getString("token");
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
+            httpObject = HttpRequestHelper.postRequest(httpObject);
+
+            if(httpObject.getHttpCode()==200) {
+                JSONObject jsonObj = new JSONObject(httpObject.getResult());
+                if(!(jsonObj.getString("token") !=null) || !jsonObj.getString("token").isEmpty()) {
+                    return jsonObj.getString("token");
+                }else{
+                    Log.e(className, "Token was not retrieved");
+                }
+
+            }else{
+                Log.e(className, "ErrorCode "+httpObject.getHttpCode()+" was returned");
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return "";
     }
 
     public static void addItem(JSONObject jsonObject, long listId, String token) throws IOException, JSONException {
-        String endpointDomain = domain + "/v1/list/" + listId + "/item/add";
+        String url = domain + "/v1/list/" + listId + "/item/add";
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            HttpRequestHelper.postRequest(token, jsonObject, url);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
+            httpObject.setToken(token);
+            HttpRequestHelper.postRequest(httpObject);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static String deleteItem(String token, long id, long listId) throws IOException, JSONException {
-        String endpointDomain = domain + "/v1/list/" + listId + "/item/" + id;
+        String url = domain + "/v1/list/" + listId + "/item/" + id;
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            HttpRequestHelper.deleteRequest(token, url);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url);
+            httpObject.setToken(token);
+            HttpRequestHelper.deleteRequest(httpObject);
             return null;
         } catch (Exception e) {
             return null;
@@ -71,12 +99,13 @@ public class APIHelper {
     }
 
     public static long getLists(String token) {
-        String endpointDomain = domain + "/v1/lists";
+        String url = domain + "/v1/lists";
         Map<String, Long> listIds = new HashMap<>();
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            String result = HttpRequestHelper.getRequest(token, url);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url);
+            httpObject.setToken(token);
+            String result = HttpRequestHelper.getRequest(httpObject);
             JSONObject jsonObj = new JSONObject(result);
             JSONArray lists = (JSONArray) jsonObj.get("lists");
             for (int i = 0; i < lists.length(); i++) {
@@ -92,11 +121,12 @@ public class APIHelper {
     }
 
     public static ArrayList<Item> getListItems(String token, long listId) {
-        String endpointDomain = domain + "/v1/list/" + listId;
+        String url = domain + "/v1/list/" + listId;
         try {
             //constants
-            URL url = new URL(endpointDomain);
-            String result = HttpRequestHelper.getRequest(token, url);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url);
+            httpObject.setToken(token);
+            String result = HttpRequestHelper.getRequest(httpObject);
             return parseItems(result);
         } catch (Exception e) {
             e.printStackTrace();

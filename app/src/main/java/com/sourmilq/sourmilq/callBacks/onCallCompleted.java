@@ -5,5 +5,5 @@ package com.sourmilq.sourmilq.callBacks;
  */
 
 public interface onCallCompleted {
-    void onTaskCompleted(String token);
+    void onTaskCompleted(boolean status);
 }

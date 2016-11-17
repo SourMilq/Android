@@ -40,21 +40,25 @@ public class Authentication extends AsyncTask<JSONObject, Void, String> {
                 } else if (authType == AuthType.SIGNUP) {
                     result = APIHelper.signup(params[0]);
                 }
-                model.setToken(result);
-                model.setListIds(APIHelper.getLists(result));
+                if(result!=null&&! result.isEmpty()) {
+                    model.setToken(result);
+                    model.setListIds(APIHelper.getLists(result));
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return result;
     }
 
     @Override
     protected void onPostExecute(String token) {
-        listener.onTaskCompleted(token);
-
+        if(token!=null && !token.isEmpty()) {
+            listener.onTaskCompleted(true);
+        }else{
+            listener.onTaskCompleted(false);
+        }
         super.onPostExecute(token);
     }
 }
