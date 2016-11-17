@@ -45,8 +45,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             if (mDataset.size() != updatedDataset.size()) break COMPARE_NEW;
             int size = mDataset.size();
             for (int i = 0; i < size; i++) {
-                boolean eq = mDataset.get(i).equals(updatedDataset.get(i));
-                if (!(eq))
+                if (!(mDataset.get(i).equals(updatedDataset.get(i))))
                     break COMPARE_NEW;
             }
             return;
