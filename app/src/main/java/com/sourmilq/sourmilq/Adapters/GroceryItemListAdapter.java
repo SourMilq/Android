@@ -37,10 +37,20 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void update(Observable observable, Object data) {
-//        Model model = Model.class.cast(observable);
-//        for (Item item : model.getGroceryItems()) {
-//            mDataset.add(item.getName());
-//        }
+        ArrayList<Item> updatedDataset = model.getGroceryItems();
+
+        // only notify changes if changes exist (makes UI look better)
+        COMPARE_NEW:
+        {
+            if (mDataset.size() != updatedDataset.size()) break COMPARE_NEW;
+            int size = mDataset.size();
+            for (int i = 0; i < size; i++) {
+                boolean eq = mDataset.get(i).equals(updatedDataset.get(i));
+                if (!(eq))
+                    break COMPARE_NEW;
+            }
+            return;
+        }
         mDataset = model.getGroceryItems();
         notifyDataSetChanged();
     }
@@ -55,7 +65,8 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset.get(position).getName());
+        Item item = mDataset.get(position);
+        holder.mTextView.setText(item.getName() + " (" + item.getNumItems() + ")");
     }
 
     @Override
@@ -63,20 +74,21 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         return mDataset.size();
     }
 
-//    public void remove(int position) {
-//        mDataset.remove(position);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void add(String newItem) {
-//        mDataset.add(new Item(newItem));
-//        notifyDataSetChanged();
-//    }
+    public void remove(int position) {
+        mDataset.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void add(Item newItem) {
+        mDataset.add(newItem);
+        notifyItemInserted(mDataset.size() - 1);
+    }
 
     @Override
     public void onItemDismiss(int position) {
-        mDataset.remove(position);
-        notifyItemRemoved(position);
+        Item itemToRemove = mDataset.get(position);
+        remove(position);
+        model.deleteItem(itemToRemove);
     }
 
     public ArrayList<Item> getDataset() {

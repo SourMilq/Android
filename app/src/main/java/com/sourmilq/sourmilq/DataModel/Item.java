@@ -60,4 +60,11 @@ public class Item implements Serializable {
         }
         return jsonObject;
     }
+
+    public boolean equals(Item other) {
+        return name.equals(other.getName()) &&
+                numItems == other.getNumItems() &&
+                Math.abs(price - other.getPrice()) < 0.0049 &&
+                id == other.getId();
+    }
 }
