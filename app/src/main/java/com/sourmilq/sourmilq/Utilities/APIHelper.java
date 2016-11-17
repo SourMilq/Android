@@ -43,6 +43,7 @@ public class APIHelper {
             return jsonObj.getString("token");
 
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

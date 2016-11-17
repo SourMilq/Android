@@ -1,9 +1,10 @@
-package com.sourmilq.sourmilq.Utilities;
+package com.sourmilq.sourmilq.Tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.Utilities.APIHelper;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import org.json.JSONException;
@@ -23,10 +24,10 @@ public class Authentication extends AsyncTask<JSONObject, Void, String> {
     private AuthType authType;
     private Model model;
 
-    public Authentication(onCallCompleted listener, AuthType authType) {
+    public Authentication(onCallCompleted listener, AuthType authType, Model model) {
         this.listener = listener;
         this.authType = authType;
-        model = Model.getInstance();
+        this.model = model;
     }
 
     @Override
@@ -51,9 +52,10 @@ public class Authentication extends AsyncTask<JSONObject, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String s) {
-        listener.onTaskCompleted(s);
-        super.onPostExecute(s);
+    protected void onPostExecute(String token) {
+        listener.onTaskCompleted(token);
+
+        super.onPostExecute(token);
     }
 }
 

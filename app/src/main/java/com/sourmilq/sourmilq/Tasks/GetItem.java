@@ -1,10 +1,11 @@
-package com.sourmilq.sourmilq.Utilities;
+package com.sourmilq.sourmilq.Tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.Utilities.APIHelper;
 
 import org.json.JSONObject;
 
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     private Model model;
 
-    public GetItem() {
-        model = Model.getInstance();
+    public GetItem(Model model) {
+        this.model = model;
     }
 
     @Override

@@ -37,7 +37,7 @@ import java.util.ArrayList;
  * Use the {@link GroceryListItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroceryListItemsFragment extends Fragment implements onCallCompleted {
+public class GroceryListItemsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,6 +56,8 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
     private RecyclerView mRecyclerView;
     private GroceryItemListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private Model model;
 
     public GroceryListItemsFragment() {
         // Required empty public constructor
@@ -86,6 +88,7 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        this.model = Model.getInstance(getActivity().getApplicationContext());
     }
 
     @Override
@@ -101,7 +104,7 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(this);
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
@@ -129,7 +132,7 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 //                                mAdapter.add(input.getText().toString());
-                                Model.getInstance().addItem(new Item(input.getText().toString()),GroceryListItemsFragment.this);
+                                model.addItem(new Item(input.getText().toString()));
                             }
                         });
 
@@ -148,7 +151,7 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Model.getInstance().updateGroceryList();
+                model.updateGroceryList();
                 Snackbar.make(v, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
@@ -186,11 +189,6 @@ public class GroceryListItemsFragment extends Fragment implements onCallComplete
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onTaskCompleted(String token) {
-        Model.getInstance().updateGroceryList();
     }
 
     /**

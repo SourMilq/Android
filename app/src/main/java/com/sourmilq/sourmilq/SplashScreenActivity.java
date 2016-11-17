@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
 
@@ -24,7 +25,9 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_activity);
-        model = Model.getInstance();
+        model = Model.getInstance(getApplicationContext());
+        Toast.makeText(getApplicationContext(), model.getToken(),
+                Toast.LENGTH_LONG).show();
 
         if (model.getToken() != null) {
             mHandler = new Handler();
