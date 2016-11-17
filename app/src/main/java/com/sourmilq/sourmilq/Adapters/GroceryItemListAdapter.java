@@ -1,5 +1,6 @@
 package com.sourmilq.sourmilq.Adapters;
 
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -8,16 +9,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourmilq.sourmilq.DataModel.Item;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Philip on 2016-10-15.
  */
 
-public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> {
-    private ArrayList<String> mDataset;
+public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer {
+    private onCallCompleted listener;
+    private ArrayList<Item> mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
@@ -34,13 +41,29 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         @Override
         public boolean onLongClick(View view) {
             int position = getLayoutPosition();
-            mAdapter.remove(position);
+//            mAdapter.remove(position);
+
+            Model.getInstance().deleteItem(mAdapter.getDataset().get(position), mAdapter.getListener());
             return true;
         }
     }
 
-    public GroceryItemListAdapter(ArrayList<String> myDataset) {
-        mDataset = myDataset;
+    @Override
+    public void update(Observable observable, Object data) {
+//        Model model = Model.class.cast(observable);
+//        for (Item item : model.getGroceryItems()) {
+//            mDataset.add(item.getName());
+//        }
+        mDataset = Model.getInstance().getGroceryItems();
+        notifyDataSetChanged();
+    }
+
+    public GroceryItemListAdapter(onCallCompleted listener) {
+        this.listener = listener;
+        mDataset = new ArrayList<>();
+        Model model = Model.getInstance();
+        model.addObserver(this);
+//        update(model, null);
     }
 
     @Override
@@ -53,7 +76,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset.get(position));
+        holder.mTextView.setText(mDataset.get(position).getName());
     }
 
     @Override
@@ -61,13 +84,21 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         return mDataset.size();
     }
 
-    public void remove(int position) {
-        mDataset.remove(position);
-        notifyDataSetChanged();
+//    public void remove(int position) {
+//        mDataset.remove(position);
+//        notifyDataSetChanged();
+//    }
+//
+//    public void add(String newItem) {
+//        mDataset.add(new Item(newItem));
+//        notifyDataSetChanged();
+//    }
+
+    public ArrayList<Item> getDataset() {
+        return mDataset;
     }
 
-    public void add(String newItem) {
-        mDataset.add(newItem);
-        notifyDataSetChanged();
+    public onCallCompleted getListener() {
+        return listener;
     }
 }

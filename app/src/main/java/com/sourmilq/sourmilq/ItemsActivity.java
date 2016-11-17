@@ -18,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sourmilq.sourmilq.Adapters.ItemTabsPagerAdapter;
+import com.sourmilq.sourmilq.DataModel.Item;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Fragments.GroceryListItemsFragment;
 import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
 
@@ -32,15 +34,6 @@ public class ItemsActivity extends AppCompatActivity
         setContentView(R.layout.activity_items);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

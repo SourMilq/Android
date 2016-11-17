@@ -26,6 +26,7 @@
         android:id="@+id/lastName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:layout_margin="20dp"/>
 
     <TextView

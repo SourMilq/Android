@@ -11,7 +11,9 @@ public class NetworkUtil {
 
     public enum NetworkStatus {
         TYPE_WIFI, TYPE_MOBILE, TYPE_NOT_CONECTED
-    };
+    }
+
+    ;
 
     public static NetworkStatus getConnectivityStatus(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
@@ -19,10 +21,10 @@ public class NetworkUtil {
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (null != activeNetwork) {
-            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
                 return NetworkStatus.TYPE_WIFI;
 
-            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
                 return NetworkStatus.TYPE_MOBILE;
         }
         return NetworkStatus.TYPE_NOT_CONECTED;
@@ -41,7 +43,7 @@ public class NetworkUtil {
         return status;
     }
 
-    public static boolean isConnected(Context context){
+    public static boolean isConnected(Context context) {
         NetworkStatus conn = NetworkUtil.getConnectivityStatus(context);
         return conn != NetworkStatus.TYPE_NOT_CONECTED;
     }
