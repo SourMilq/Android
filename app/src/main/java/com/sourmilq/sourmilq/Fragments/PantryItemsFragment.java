@@ -4,11 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
+import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 
 /**
@@ -19,7 +24,7 @@ import com.sourmilq.sourmilq.R;
  * Use the {@link PantryItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PantryItemsFragment extends Fragment {
+public class PantryItemsFragment extends Fragment implements onCallCompleted {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +35,9 @@ public class PantryItemsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private GroceryItemListAdapter mAdapter;
 
     public PantryItemsFragment() {
         // Required empty public constructor
@@ -65,8 +73,20 @@ public class PantryItemsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_pantry_items, container, false);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new GroceryItemListAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pantry_items, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,6 +111,11 @@ public class PantryItemsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onTaskCompleted(String token) {
+        Model.getInstance().updateGroceryList();
     }
 
     /**
