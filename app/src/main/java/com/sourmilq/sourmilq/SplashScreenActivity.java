@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
 
+import java.util.TimerTask;
+
 /**
  * Created by ajanthan on 16-10-15.
  */
@@ -54,6 +56,17 @@ public class SplashScreenActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        //Synchronization
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                model.updateGroceryList();
+                handler.postDelayed(this, 10000);
+            }
+        };
+        handler.postDelayed(runnable, 100);
 
     }
 
