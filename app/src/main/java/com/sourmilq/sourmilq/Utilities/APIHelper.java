@@ -77,7 +77,7 @@ public class APIHelper {
         String url = domain + "/v1/list/" + listId + "/item/add";
         try {
             //constants
-            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST,url,jsonObject);
             httpObject.setToken(token);
             HttpRequestHelper.postRequest(httpObject);
         } catch (Exception e) {
@@ -85,22 +85,35 @@ public class APIHelper {
         }
     }
 
-    public static String deleteItem(String token, long id, long listId) throws IOException, JSONException {
+    public static void deleteItem(String token, long id, long listId) throws IOException, JSONException {
         String url = domain + "/v1/list/" + listId + "/item/" + id;
         try {
             //constants
-            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.DELETE,url);
             httpObject.setToken(token);
             HttpRequestHelper.deleteRequest(httpObject);
-            return null;
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
     }
 
-    public static long getLists(String token) {
+    public static void checkOffItem(String token, long id, long listId) throws IOException, JSONException {
+        String url = domain + "/v1/list/" + listId + "/item/" + id + "/done";
+        try {
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST,url);
+            httpObject.setToken(token);
+            HttpRequestHelper.postRequest(httpObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Long> getLists(String token) {
         String url = domain + "/v1/lists";
         Map<String, Long> listIds = new HashMap<>();
+        ArrayList<Long> ret = new ArrayList<>();
+        ret.add(0l);
+        ret.add(0l);
         try {
             //constants
             HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url);
@@ -111,13 +124,17 @@ public class APIHelper {
             for (int i = 0; i < lists.length(); i++) {
                 JSONObject list = lists.getJSONObject(i);
                 if (list.get("name").equals("Grocery List")) {
-                    return list.getLong("id");
+                    ret.remove(0);
+                    ret.add(0, list.getLong("id"));
+                } else if (list.get("name").equals("Fridge")) {
+                    ret.remove(1);
+                    ret.add(1, list.getLong("id"));
                 }
             }
-            return 0;
         } catch (Exception e) {
-            return 0;
+            e.printStackTrace();
         }
+        return ret;
     }
 
     public static ArrayList<Item> getListItems(String token, long listId) {

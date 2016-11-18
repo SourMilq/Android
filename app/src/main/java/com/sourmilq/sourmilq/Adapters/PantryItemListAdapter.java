@@ -1,15 +1,12 @@
 package com.sourmilq.sourmilq.Adapters;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
@@ -24,15 +21,15 @@ import java.util.Observer;
  * Created by Philip on 2016-10-15.
  */
 
-public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer, ItemTouchHelperAdapter {
+public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAdapter.ViewHolder> implements Observer {
     private onCallCompleted listener;
     private ArrayList<Item> mDataset;
     private Model model;
     private View containerView;
 
-    public GroceryItemListAdapter(Context context, View containerView) {
+    public PantryItemListAdapter(Context context, View containerView) {
         model = Model.getInstance(context);
-        mDataset = model.getGroceryItems();
+        mDataset = model.getPantryItems();
         model.addObserver(this);
 //        update(model, null);
         this.containerView = containerView;
@@ -40,7 +37,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void update(Observable observable, Object data) {
-        ArrayList<Item> updatedDataset = model.getGroceryItems();
+        ArrayList<Item> updatedDataset = model.getPantryItems();
 
         // only notify changes if changes exist (makes UI look better)
         COMPARE_NEW:
@@ -58,9 +55,9 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
     }
 
     @Override
-    public GroceryItemListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PantryItemListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.grocery_list_item, parent, false);
+                .inflate(R.layout.pantry_list_item, parent, false);
         ViewHolder vh = new ViewHolder(this, view);
         return vh;
     }
@@ -86,18 +83,6 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         notifyItemInserted(mDataset.size() - 1);
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-        Item itemToRemove = mDataset.get(position);
-        remove(position);
-        model.checkOffItem(itemToRemove);
-        Snackbar.make(
-                containerView,
-                "Moved " + itemToRemove.getName() + " to pantry...",
-                Snackbar.LENGTH_LONG
-        ).show();
-    }
-
     public ArrayList<Item> getDataset() {
         return mDataset;
     }
@@ -105,9 +90,9 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
     public static class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnLongClickListener*/ {
 
         public TextView mTextView;
-        public GroceryItemListAdapter mAdapter;
+        public PantryItemListAdapter mAdapter;
 
-        public ViewHolder(GroceryItemListAdapter adapter, View v) {
+        public ViewHolder(PantryItemListAdapter adapter, View v) {
             super(v);
             mAdapter = adapter;
             mTextView = (TextView) v.findViewById(R.id.info_text);

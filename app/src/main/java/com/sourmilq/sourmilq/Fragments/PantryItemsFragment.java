@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
+import com.sourmilq.sourmilq.Adapters.PantryItemListAdapter;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
@@ -37,7 +38,7 @@ public class PantryItemsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private GroceryItemListAdapter mAdapter;
+    private PantryItemListAdapter mAdapter;
 
     public PantryItemsFragment() {
         // Required empty public constructor
@@ -83,7 +84,7 @@ public class PantryItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view); // TODO change to pantry adapter
+        mAdapter = new PantryItemListAdapter(getActivity().getApplicationContext(), view); // TODO change to pantry adapter
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
         return view;
