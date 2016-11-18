@@ -10,22 +10,19 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.NumberPicker;
 
 import com.google.android.gms.plus.PlusOneButton;
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
-import com.sourmilq.sourmilq.callBacks.onCallCompleted;
-
-import java.util.ArrayList;
+import com.sourmilq.sourmilq.callBacks.SimpleItemTouchHelperCallback;
 
 /**
  * A fragment with a Google +1 button.
@@ -90,7 +87,7 @@ public class GroceryListItemsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_grocery_list_items, container, false);
@@ -102,31 +99,46 @@ public class GroceryListItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext());
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view);
         mRecyclerView.setAdapter(mAdapter);
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(mRecyclerView);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 alertDialog.setTitle("Add Item");
-                alertDialog.setMessage("Item name:");
 
-                final EditText input = new EditText(getActivity());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
+                final View newGroceryItemDialogueView = inflater
+                        .inflate(R.layout.dialogue_new_grocery_item, null);
+                final EditText editNameView = (EditText) newGroceryItemDialogueView
+                        .findViewById(R.id.editName);
+                final NumberPicker quantityPickerView = (NumberPicker) newGroceryItemDialogueView
+                        .findViewById(R.id.quantityPicker);
+                quantityPickerView.setMinValue(1);
+                quantityPickerView.setMaxValue(50);
+                quantityPickerView.setValue(1);
+                final EditText editPriceView = (EditText) newGroceryItemDialogueView
+                        .findViewById(R.id.editPrice);
+
+                alertDialog.setView(newGroceryItemDialogueView);
 
                 alertDialog.setPositiveButton("Add Item",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 //                                mAdapter.add(input.getText().toString());
-                                model.addItem(new Item(input.getText().toString()));
+                                String name = editNameView.getText().toString();
+                                int quantity = quantityPickerView.getValue();
+                                String priceAsString = editPriceView.getText().toString();
+                                double price = priceAsString.isEmpty() ? 0.00 : Double.parseDouble(priceAsString);
+                                long id = 0l;
+                                Item newItem = new Item(name, quantity, price, id);
+                                mAdapter.add(newItem);
+                                model.addItem(newItem);
                             }
                         });
 

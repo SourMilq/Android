@@ -83,7 +83,7 @@ public class PantryItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext());
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view); // TODO change to pantry adapter
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
         return view;

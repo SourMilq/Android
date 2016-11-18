@@ -2,6 +2,7 @@ package com.sourmilq.sourmilq.Adapters;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -23,23 +24,35 @@ import java.util.Observer;
  * Created by Philip on 2016-10-15.
  */
 
-public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer {
+public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemListAdapter.ViewHolder> implements Observer, ItemTouchHelperAdapter {
+    private onCallCompleted listener;
     private ArrayList<Item> mDataset;
     private Model model;
+    private View containerView;
 
-    public GroceryItemListAdapter(Context context) {
+    public GroceryItemListAdapter(Context context, View containerView) {
         model = Model.getInstance(context);
         mDataset = model.getGroceryItems();
         model.addObserver(this);
 //        update(model, null);
+        this.containerView = containerView;
     }
 
     @Override
     public void update(Observable observable, Object data) {
-//        Model model = Model.class.cast(observable);
-//        for (Item item : model.getGroceryItems()) {
-//            mDataset.add(item.getName());
-//        }
+        ArrayList<Item> updatedDataset = model.getGroceryItems();
+
+        // only notify changes if changes exist (makes UI look better)
+        COMPARE_NEW:
+        {
+            if (mDataset.size() != updatedDataset.size()) break COMPARE_NEW;
+            int size = mDataset.size();
+            for (int i = 0; i < size; i++) {
+                if (!(mDataset.get(i).equals(updatedDataset.get(i))))
+                    break COMPARE_NEW;
+            }
+            return;
+        }
         mDataset = model.getGroceryItems();
         notifyDataSetChanged();
     }
@@ -54,7 +67,8 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset.get(position).getName());
+        Item item = mDataset.get(position);
+        holder.mTextView.setText(item.getName() + " (" + item.getNumItems() + ")");
     }
 
     @Override
@@ -62,21 +76,33 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         return mDataset.size();
     }
 
-//    public void remove(int position) {
-//        mDataset.remove(position);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void add(String newItem) {
-//        mDataset.add(new Item(newItem));
-//        notifyDataSetChanged();
-//    }
+    public void remove(int position) {
+        mDataset.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void add(Item newItem) {
+        mDataset.add(newItem);
+        notifyItemInserted(mDataset.size() - 1);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        Item itemToRemove = mDataset.get(position);
+        remove(position);
+        model.deleteItem(itemToRemove);
+        Snackbar.make(
+                containerView,
+                "Moved " + itemToRemove.getName() + " to pantry... !!!PANTRY NOT IMPLEMENTED YET",
+                Snackbar.LENGTH_LONG
+        ).show();
+    }
 
     public ArrayList<Item> getDataset() {
         return mDataset;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnLongClickListener*/ {
 
         public TextView mTextView;
         public GroceryItemListAdapter mAdapter;
@@ -85,16 +111,16 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             super(v);
             mAdapter = adapter;
             mTextView = (TextView) v.findViewById(R.id.info_text);
-            mTextView.setOnLongClickListener(this);
+//            mTextView.setOnLongClickListener(this);
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            int position = getLayoutPosition();
-//            mAdapter.remove(position);
-
-            mAdapter.model.deleteItem(mAdapter.getDataset().get(position));
-            return true;
-        }
+//        @Override
+//        public boolean onLongClick(View view) {
+//            int position = getLayoutPosition();
+////            mAdapter.remove(position);
+//
+//            mAdapter.model.deleteItem(mAdapter.getDataset().get(position));
+//            return true;
+//        }
     }
 }
