@@ -19,7 +19,10 @@ import java.util.Observable;
  * Created by ajanthan on 16-10-15.
  */
 public class Model extends Observable {
-    private static final String className="Model";
+    public enum ActionType {ADD, UPDATE, DELETE, GETLIST}
+    public boolean isTaskRunning;
+
+    private static final String className = "Model";
     private static Model instance = null;
 
     private ArrayList<Item> groceryItems;
@@ -29,9 +32,13 @@ public class Model extends Observable {
     private String token;
     private Context context;
 
+    private ArrayList<ServerTask> taskQueue;
+
     private Model() {
-        groceryItems =  new ArrayList<>();
-        pantryItems =  new ArrayList<>();
+        groceryItems = new ArrayList<>();
+        pantryItems = new ArrayList<>();
+        taskQueue = new ArrayList<>();
+        isTaskRunning = false;
     }
 
     public static Model getInstance(Context context) {
@@ -61,7 +68,7 @@ public class Model extends Observable {
         return instance;
     }
 
-    public boolean hasValidToken(){
+    public boolean hasValidToken() {
         return token != null;
     }
 
@@ -87,16 +94,15 @@ public class Model extends Observable {
         return groceryItems;
     }
 
-    public void updateGroceryList(){
-        if(NetworkUtil.isConnected(context)) {
-            GetItem getItem = new GetItem(this);
-            getItem.execute();
-            saveData();
-        }
+    public void updateGroceryList() {
+        ServerTask serverTask = new ServerTask(ActionType.GETLIST);
+        serverTask.listid = groceryListId;
+        taskQueue.add(serverTask);
+        dequeueTasks();
     }
 
     public void setGroceryItems(ArrayList<Item> groceryItems) {
-        if(groceryItems!=null) {
+        if (groceryItems != null) {
             this.groceryItems = groceryItems;
             Log.e("blah", "overridden");
             setChanged();
@@ -113,7 +119,7 @@ public class Model extends Observable {
         this.pantryItems = pantryItems;
     }
 
-    public String getToken(){
+    public String getToken() {
         return token;
     }
 
@@ -122,31 +128,29 @@ public class Model extends Observable {
         saveData();
     }
 
-    public Long getGroceryListId(){
+    public Long getGroceryListId() {
         return groceryListId;
     }
 
-    public void setListIds(long id){
-        if(NetworkUtil.isConnected(context)) {
+    public void setListIds(long id) {
+        if (NetworkUtil.isConnected(context)) {
             groceryListId = id;
             updateGroceryList();
         }
     }
 
-    public void addItem(Item item){
-        if(NetworkUtil.isConnected(context)) {
-            AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.ADD, groceryListId, item, token);
-            addDeleteItem.execute();
-            updateGroceryList();
-        }
+    public void addItem(Item item) {
+        ServerTask serverTask = new ServerTask(ActionType.ADD);
+        serverTask.item = item;
+        serverTask.listid = groceryListId;
+        taskQueue.add(serverTask);
     }
 
-    public void deleteItem(Item item){
-        if(NetworkUtil.isConnected(context)) {
-            AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE, groceryListId, item, token);
-            addDeleteItem.execute();
-            updateGroceryList();
-        }
+    public void deleteItem(Item item) {
+        ServerTask serverTask = new ServerTask(ActionType.DELETE);
+        serverTask.item = item;
+        serverTask.listid = groceryListId;
+        taskQueue.add(serverTask);
     }
 
     public void setGroceryListId(long groceryListId) {
@@ -160,4 +164,45 @@ public class Model extends Observable {
     public void setPantryListId(long pantryListId) {
         this.pantryListId = pantryListId;
     }
+
+    ///////////////////QUEUE METHODS//////////////////////////
+
+    public void finishedTasks(){
+        isTaskRunning= false;
+    }
+
+    public void dequeueTasks() {
+        if(taskQueue.isEmpty()){
+            isTaskRunning = false;
+            updateItems();
+            return;
+        }
+        if (NetworkUtil.isConnected(context) && !isTaskRunning) {
+            isTaskRunning = true;
+            ServerTask serverTask = taskQueue.remove(0);
+            switch (serverTask.actionType) {
+                case ADD:
+                case DELETE:
+                    addDeleteItemTask(serverTask);
+                    break;
+                case GETLIST:
+                    updateItems();
+                    break;
+                case UPDATE:
+                    break;
+            }
+        }
+    }
+
+    private void addDeleteItemTask(ServerTask serverTask) {
+        AddDeleteItem addDeleteItem = new AddDeleteItem(serverTask.actionType, serverTask.listid, serverTask.item, token, this);
+        addDeleteItem.execute();
+    }
+
+    private void updateItems(){
+        GetItem getItem = new GetItem(this);
+        getItem.execute();
+        saveData();
+    }
+
 }

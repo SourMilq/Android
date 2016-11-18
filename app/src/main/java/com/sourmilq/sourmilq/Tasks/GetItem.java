@@ -32,6 +32,7 @@ public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     @Override
     protected void onPostExecute(ArrayList<Item> a) {
         model.setGroceryItems(a);
+        model.finishedTasks();
         super.onPostExecute(a);
     }
 }

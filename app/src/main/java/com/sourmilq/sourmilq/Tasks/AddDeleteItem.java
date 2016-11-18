@@ -18,26 +18,27 @@ import java.util.ArrayList;
  */
 
 public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
-    public enum ActionType {ADD, DELETE}
 
-    private ActionType actionType;
+
+    private Model.ActionType actionType;
     private Long listId;
     private Item item;
     private String token;
+    private Model model;
 
-    public AddDeleteItem(ActionType actionType, Long listId, Item item, String token) {
+    public AddDeleteItem(Model.ActionType actionType, Long listId, Item item, String token, Model model) {
         this.actionType = actionType;
         this.listId = listId;
         this.item = item;
         this.token = token;
+        this.model = model;
     }
 
     @Override
     protected Void doInBackground(JSONObject... params) {
 
         //Todo: add parameter checking
-
-        if (actionType == ActionType.ADD) {
+        if (actionType == Model.ActionType.ADD) {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("item", item.getJson());
@@ -47,7 +48,7 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (actionType == ActionType.DELETE) {
+        } else if (actionType == Model.ActionType.DELETE) {
             try {
                 APIHelper.deleteItem(token, item.getId(), listId);
             } catch (IOException e) {
@@ -57,6 +58,13 @@ public class AddDeleteItem extends AsyncTask<JSONObject, Void, Void> {
             }
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        model.finishedTasks();
+        model.dequeueTasks();
     }
 }
 
