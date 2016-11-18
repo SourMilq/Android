@@ -49,20 +49,31 @@ public class SignUpActivity extends Activity implements onCallCompleted {
             @Override
             public void onClick(View v) {
                 JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("first_name", firstNameET.getText());
-                    jsonObject.put("last_name", lastNameET.getText());
-                    jsonObject.put("email", emailET.getText());
-                    jsonObject.put("username", usernameET.getText());
-                    jsonObject.put("password", passwordET.getText());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(NetworkUtil.isConnected(getApplicationContext())) {
-                    Authentication sendDataTask = new Authentication(SignUpActivity.this, Authentication.AuthType.SIGNUP, model);
-                    sendDataTask.execute(jsonObject);
+                String firstName = firstNameET.getText().toString();
+                String lastName = lastNameET.getText().toString();
+                String email = emailET.getText().toString();
+                String username = usernameET.getText().toString();
+                String password = usernameET.getText().toString();
+                if(!(firstName.isEmpty() || lastName.isEmpty() ||
+                        email.isEmpty() || username.isEmpty() || password.isEmpty())) {
+                    try {
+                        jsonObject.put("first_name", firstName);
+                        jsonObject.put("last_name", lastName);
+                        jsonObject.put("email", email);
+                        jsonObject.put("username", username);
+                        jsonObject.put("password", password);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (NetworkUtil.isConnected(getApplicationContext())) {
+                        Authentication sendDataTask = new Authentication(SignUpActivity.this, Authentication.AuthType.SIGNUP, model);
+                        sendDataTask.execute(jsonObject);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No Internet, Unable to Sign Up",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
-                    Toast.makeText(getApplicationContext(), "No Internet, Unable to Sign Up",
+                    Toast.makeText(getApplicationContext(), "Make sure no fields are empty",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -74,7 +85,7 @@ public class SignUpActivity extends Activity implements onCallCompleted {
             Intent intent = new Intent(SignUpActivity.this, ItemsActivity.class);
             startActivity(intent);
         }else{
-            Toast.makeText(getApplicationContext(), "Invalid username or password",
+            Toast.makeText(getApplicationContext(), "Username already exists",
                     Toast.LENGTH_LONG).show();
         }
     }

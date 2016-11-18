@@ -40,7 +40,7 @@ public class Authentication extends AsyncTask<JSONObject, Void, String> {
                 } else if (authType == AuthType.SIGNUP) {
                     result = APIHelper.signup(params[0]);
                 }
-                if(result!=null&&! result.isEmpty()) {
+                if(result!=null || !result.isEmpty()) {
                     model.setToken(result);
                     model.setListIds(APIHelper.getLists(result));
                 }

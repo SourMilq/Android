@@ -30,7 +30,7 @@ public class APIHelper {
             //constants
             HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
             httpObject = HttpRequestHelper.postRequest(httpObject);
-            if(httpObject.getHttpCode()==200) {
+            if (200 <= httpObject.getHttpCode() && httpObject.getHttpCode() <= 299) {
                 JSONObject jsonObj = new JSONObject(httpObject.getResult());
                 if(!(jsonObj.getString("token") !=null) || !jsonObj.getString("token").isEmpty()) {
                     return jsonObj.getString("token");
@@ -54,7 +54,7 @@ public class APIHelper {
             HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET,url,jsonObject);
             httpObject = HttpRequestHelper.postRequest(httpObject);
 
-            if(httpObject.getHttpCode()==200) {
+            if (200 <= httpObject.getHttpCode() && httpObject.getHttpCode() <= 299) {
                 JSONObject jsonObj = new JSONObject(httpObject.getResult());
                 if(!(jsonObj.getString("token") !=null) || !jsonObj.getString("token").isEmpty()) {
                     return jsonObj.getString("token");
