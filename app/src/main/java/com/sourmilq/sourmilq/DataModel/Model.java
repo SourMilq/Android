@@ -121,7 +121,6 @@ public class Model extends Observable {
     public void setPantryItems(ArrayList<Item> pantryItems) {
         if(pantryItems!=null) {
             this.pantryItems = pantryItems;
-            Log.e("blah", "overridden pantry");
             setChanged();
             notifyObservers();
             saveData();

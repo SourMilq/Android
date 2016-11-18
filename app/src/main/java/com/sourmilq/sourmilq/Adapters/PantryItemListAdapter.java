@@ -82,18 +82,6 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
         mDataset.add(newItem);
         notifyItemInserted(mDataset.size() - 1);
     }
-//
-//    @Override
-//    public void onItemDismiss(int position) {
-//        Item itemToRemove = mDataset.get(position);
-//        remove(position);
-//        model.deleteItem(itemToRemove);
-//        Snackbar.make(
-//                containerView,
-//                "Moved " + itemToRemove.getName() + " to pantry... !!!PANTRY NOT IMPLEMENTED YET",
-//                Snackbar.LENGTH_LONG
-//        ).show();
-//    }
 
     public ArrayList<Item> getDataset() {
         return mDataset;
