@@ -63,6 +63,7 @@ public class SplashScreenActivity extends Activity {
             @Override
             public void run() {
                 model.updateGroceryList();
+                model.updatePantryList();
                 handler.postDelayed(this, 10000);
             }
         };

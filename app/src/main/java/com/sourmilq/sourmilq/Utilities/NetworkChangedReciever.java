@@ -19,6 +19,7 @@ public class NetworkChangedReciever extends BroadcastReceiver {
                 Toast.LENGTH_LONG).show();
         if(NetworkUtil.getConnectivityStatus(context)!= NetworkUtil.NetworkStatus.TYPE_NOT_CONECTED){
             Model.getInstance(context).updateGroceryList();
+            Model.getInstance(context).updatePantryList();
         }
     }
 }

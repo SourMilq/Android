@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
+import com.sourmilq.sourmilq.Tasks.CheckOffItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
 import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
@@ -89,7 +90,15 @@ public class Model extends Observable {
 
     public void updateGroceryList(){
         if(NetworkUtil.isConnected(context)) {
-            GetItem getItem = new GetItem(this);
+            GetItem getItem = new GetItem(this, groceryListId);
+            getItem.execute();
+            saveData();
+        }
+    }
+
+    public void updatePantryList() {
+        if(NetworkUtil.isConnected(context)) {
+            GetItem getItem = new GetItem(this, pantryListId);
             getItem.execute();
             saveData();
         }
@@ -110,7 +119,13 @@ public class Model extends Observable {
     }
 
     public void setPantryItems(ArrayList<Item> pantryItems) {
-        this.pantryItems = pantryItems;
+        if(pantryItems!=null) {
+            this.pantryItems = pantryItems;
+            Log.e("blah", "overridden pantry");
+            setChanged();
+            notifyObservers();
+            saveData();
+        }
     }
 
     public String getToken(){
@@ -126,10 +141,12 @@ public class Model extends Observable {
         return groceryListId;
     }
 
-    public void setListIds(long id){
+    public void setListIds(ArrayList<Long> ids){
         if(NetworkUtil.isConnected(context)) {
-            groceryListId = id;
+            groceryListId = ids.get(0);
+            pantryListId = ids.get(1);
             updateGroceryList();
+            updatePantryList();
         }
     }
 
@@ -146,6 +163,21 @@ public class Model extends Observable {
             AddDeleteItem addDeleteItem = new AddDeleteItem(AddDeleteItem.ActionType.DELETE, groceryListId, item, token);
             addDeleteItem.execute();
             updateGroceryList();
+        }
+    }
+
+    public void checkOffItem(Item item){
+        if(NetworkUtil.isConnected(context)) {
+            CheckOffItem checkOffItem = new CheckOffItem(groceryListId, item, token);
+            checkOffItem.execute();
+            updateGroceryList();
+            updatePantryList();
+        } else {
+            groceryItems.remove(item);
+            pantryItems.add(item);
+            setChanged();
+            notifyObservers();
+            saveData();
         }
     }
 
