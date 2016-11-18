@@ -22,7 +22,8 @@ import java.net.URL;
 public class HttpRequestHelper {
 
     public static HttpObject postRequest(HttpObject httpObject) {
-        String message = httpObject.getBody().toString();
+        JSONObject jsonObject = httpObject.getBody();
+        String message = jsonObject == null ? "" : jsonObject.toString();
         HttpURLConnection conn = null;
         StringBuilder out = new StringBuilder();
         try {
@@ -39,9 +40,11 @@ public class HttpRequestHelper {
                 conn.setRequestProperty("Authorization", "Bearer " + httpObject.getToken());
             }
             conn.connect();
-            OutputStream os = new BufferedOutputStream(conn.getOutputStream());
-            os.write(message.getBytes());
-            os.flush();
+            if (!message.isEmpty()) {
+                OutputStream os = new BufferedOutputStream(conn.getOutputStream());
+                os.write(message.getBytes());
+                os.flush();
+            }
             BufferedReader reader;
             httpObject.setHttpCode(conn.getResponseCode());
             if (200 <= conn.getResponseCode() && conn.getResponseCode() <= 299) {

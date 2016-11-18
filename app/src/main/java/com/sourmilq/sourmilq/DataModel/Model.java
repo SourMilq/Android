@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
+import com.sourmilq.sourmilq.Tasks.CheckOffItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
 import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
@@ -94,9 +95,8 @@ public class Model extends Observable {
         return groceryItems;
     }
 
-    public void updateGroceryList() {
+    public void updateList() {
         ServerTask serverTask = new ServerTask(ActionType.GETLIST);
-        serverTask.listid = groceryListId;
         taskQueue.add(serverTask);
         dequeueTasks();
     }
@@ -116,7 +116,12 @@ public class Model extends Observable {
     }
 
     public void setPantryItems(ArrayList<Item> pantryItems) {
-        this.pantryItems = pantryItems;
+        if(pantryItems!=null) {
+            this.pantryItems = pantryItems;
+            setChanged();
+            notifyObservers();
+            saveData();
+        }
     }
 
     public String getToken() {
@@ -132,10 +137,11 @@ public class Model extends Observable {
         return groceryListId;
     }
 
-    public void setListIds(long id) {
-        if (NetworkUtil.isConnected(context)) {
-            groceryListId = id;
-            updateGroceryList();
+    public void setListIds(ArrayList<Long> ids){
+        if(NetworkUtil.isConnected(context)) {
+            groceryListId = ids.get(0);
+            pantryListId = ids.get(1);
+            updateItems();
         }
     }
 
@@ -151,6 +157,18 @@ public class Model extends Observable {
         serverTask.item = item;
         serverTask.listid = groceryListId;
         taskQueue.add(serverTask);
+    }
+
+    public void checkOffItem(Item item){
+        ServerTask serverTask = new ServerTask(ActionType.UPDATE);
+        serverTask.item = item;
+        taskQueue.add(serverTask);
+
+        groceryItems.remove(item);
+        pantryItems.add(item);
+        setChanged();
+        notifyObservers();
+        saveData();
     }
 
     public void setGroceryListId(long groceryListId) {
@@ -189,6 +207,7 @@ public class Model extends Observable {
                     updateItems();
                     break;
                 case UPDATE:
+                    checkOffItemTask(serverTask);
                     break;
             }
         }
@@ -200,9 +219,14 @@ public class Model extends Observable {
     }
 
     private void updateItems(){
-        GetItem getItem = new GetItem(this);
-        getItem.execute();
+        new GetItem(this,pantryListId).execute();
+        new GetItem(this,groceryListId).execute();
         saveData();
+    }
+
+    private void checkOffItemTask(ServerTask serverTask){
+        CheckOffItem checkOffItem = new CheckOffItem(groceryListId, serverTask.item, token);
+        checkOffItem.execute();
     }
 
 }

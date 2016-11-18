@@ -17,22 +17,27 @@ import java.util.ArrayList;
 
 public class GetItem extends AsyncTask<JSONObject, Void, ArrayList<Item>> {
     private Model model;
+    private long listId;
 
-    public GetItem(Model model) {
+    public GetItem(Model model, long listId) {
         this.model = model;
+        this.listId = listId;
     }
 
     @Override
     protected ArrayList<Item> doInBackground(JSONObject... params) {
         ArrayList<Item> items;
-        items = APIHelper.getListItems(model.getToken(), model.getGroceryListId());
+        items = APIHelper.getListItems(model.getToken(), listId);
         return items;
     }
 
     @Override
     protected void onPostExecute(ArrayList<Item> a) {
-        model.setGroceryItems(a);
-        model.finishedTasks();
+        if (listId == model.getGroceryListId()) {
+            model.setGroceryItems(a);
+        } else if (listId == model.getPantryListId()) {
+            model.setPantryItems(a);
+        }
         super.onPostExecute(a);
     }
 }

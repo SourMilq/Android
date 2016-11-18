@@ -157,7 +157,7 @@ public class GroceryListItemsFragment extends Fragment {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.updateGroceryList();
+                model.updateList();
                 Snackbar.make(v, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
