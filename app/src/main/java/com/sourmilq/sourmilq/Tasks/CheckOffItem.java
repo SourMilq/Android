@@ -3,6 +3,7 @@ package com.sourmilq.sourmilq.Tasks;
 import android.os.AsyncTask;
 
 import com.sourmilq.sourmilq.DataModel.Item;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Utilities.APIHelper;
 
 import org.json.JSONException;
@@ -18,11 +19,13 @@ public class CheckOffItem extends AsyncTask<JSONObject, Void, Void> {
     private Long listId;
     private Item item;
     private String token;
+    private Model model;
 
-    public CheckOffItem(Long listId, Item item, String token) {
+    public CheckOffItem(Long listId, Item item, String token, Model model) {
         this.listId = listId;
         this.item = item;
         this.token = token;
+        this.model = model;
     }
 
     @Override
@@ -37,6 +40,13 @@ public class CheckOffItem extends AsyncTask<JSONObject, Void, Void> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        model.finishedTasks();
+        model.dequeueTasks();
     }
 }
 

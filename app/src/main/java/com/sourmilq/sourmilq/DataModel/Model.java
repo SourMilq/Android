@@ -21,6 +21,7 @@ import java.util.Observable;
  */
 public class Model extends Observable {
     public enum ActionType {ADD, UPDATE, DELETE, GETLIST}
+
     public boolean isTaskRunning;
 
     private static final String className = "Model";
@@ -104,10 +105,7 @@ public class Model extends Observable {
     public void setGroceryItems(ArrayList<Item> groceryItems) {
         if (groceryItems != null) {
             this.groceryItems = groceryItems;
-            Log.e("blah", "overridden");
-            setChanged();
-            notifyObservers();
-            saveData();
+            applyChanges();
         }
     }
 
@@ -116,11 +114,9 @@ public class Model extends Observable {
     }
 
     public void setPantryItems(ArrayList<Item> pantryItems) {
-        if(pantryItems!=null) {
+        if (pantryItems != null) {
             this.pantryItems = pantryItems;
-            setChanged();
-            notifyObservers();
-            saveData();
+            applyChanges();
         }
     }
 
@@ -137,8 +133,8 @@ public class Model extends Observable {
         return groceryListId;
     }
 
-    public void setListIds(ArrayList<Long> ids){
-        if(NetworkUtil.isConnected(context)) {
+    public void setListIds(ArrayList<Long> ids) {
+        if (NetworkUtil.isConnected(context)) {
             groceryListId = ids.get(0);
             pantryListId = ids.get(1);
             updateItems();
@@ -150,6 +146,10 @@ public class Model extends Observable {
         serverTask.item = item;
         serverTask.listid = groceryListId;
         taskQueue.add(serverTask);
+        dequeueTasks();
+
+        groceryItems.add(item);
+        applyChanges();
     }
 
     public void deleteItem(Item item) {
@@ -157,18 +157,26 @@ public class Model extends Observable {
         serverTask.item = item;
         serverTask.listid = groceryListId;
         taskQueue.add(serverTask);
+        dequeueTasks();
+
+        groceryItems.remove(item);
+        applyChanges();
     }
 
-    public void checkOffItem(Item item){
+    public void checkOffItem(Item item) {
         ServerTask serverTask = new ServerTask(ActionType.UPDATE);
         serverTask.item = item;
         taskQueue.add(serverTask);
+        dequeueTasks();
 
-        groceryItems.remove(item);
+        for (int i = 0; i < groceryItems.size(); i++) {
+            if (item.equals(groceryItems.get(i))) {
+                groceryItems.remove(i);
+                break;
+            }
+        }
         pantryItems.add(item);
-        setChanged();
-        notifyObservers();
-        saveData();
+        applyChanges();
     }
 
     public void setGroceryListId(long groceryListId) {
@@ -183,14 +191,21 @@ public class Model extends Observable {
         this.pantryListId = pantryListId;
     }
 
+    private void applyChanges() {
+        setChanged();
+        notifyObservers();
+        saveData();
+    }
+
     ///////////////////QUEUE METHODS//////////////////////////
 
-    public void finishedTasks(){
-        isTaskRunning= false;
+    public void finishedTasks() {
+        isTaskRunning = false;
     }
 
     public void dequeueTasks() {
-        if(taskQueue.isEmpty()){
+
+        if (taskQueue.isEmpty()) {
             isTaskRunning = false;
             updateItems();
             return;
@@ -218,14 +233,14 @@ public class Model extends Observable {
         addDeleteItem.execute();
     }
 
-    private void updateItems(){
-        new GetItem(this,pantryListId).execute();
-        new GetItem(this,groceryListId).execute();
+    private void updateItems() {
+        new GetItem(this, pantryListId).execute();
+        new GetItem(this, groceryListId).execute();
         saveData();
     }
 
-    private void checkOffItemTask(ServerTask serverTask){
-        CheckOffItem checkOffItem = new CheckOffItem(groceryListId, serverTask.item, token);
+    private void checkOffItemTask(ServerTask serverTask) {
+        CheckOffItem checkOffItem = new CheckOffItem(groceryListId, serverTask.item, token, this);
         checkOffItem.execute();
     }
 
