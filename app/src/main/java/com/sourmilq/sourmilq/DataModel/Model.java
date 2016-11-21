@@ -6,6 +6,7 @@ import android.util.Log;
 import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
 import com.sourmilq.sourmilq.Tasks.CheckOffItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
+import com.sourmilq.sourmilq.Tasks.GetRecipes;
 import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 import java.io.FileInputStream;
@@ -25,14 +26,20 @@ public class Model extends Observable {
 
     private ArrayList<Item> groceryItems;
     private ArrayList<Item> pantryItems;
+    private ArrayList<Recipe> recipes;
     private long groceryListId;
     private long pantryListId;
     private String token;
     private Context context;
 
+    private boolean loadingRecipes;
+    private int recipeOffset;
+
     private Model() {
         groceryItems =  new ArrayList<>();
         pantryItems =  new ArrayList<>();
+        recipes = new ArrayList<>();
+        recipeOffset=0;
     }
 
     public static Model getInstance(Context context) {
@@ -104,6 +111,13 @@ public class Model extends Observable {
         }
     }
 
+    public void addRecipes(ArrayList<Recipe> newRecipes){
+        recipes.addAll(newRecipes);
+        setChanged();
+        notifyObservers();
+        saveData();
+    }
+
     public void setGroceryItems(ArrayList<Item> groceryItems) {
         if(groceryItems!=null) {
             this.groceryItems = groceryItems;
@@ -125,6 +139,11 @@ public class Model extends Observable {
             notifyObservers();
             saveData();
         }
+    }
+
+
+    public ArrayList<Recipe> getRecipes() {
+        return recipes;
     }
 
     public String getToken(){
@@ -165,6 +184,24 @@ public class Model extends Observable {
         }
     }
 
+    public void getRecipe(){
+        if(NetworkUtil.isConnected(context)) {
+            if(!loadingRecipes){
+                loadingRecipes = true;
+                recipeOffset+=10;
+                GetRecipes getRecipes = new GetRecipes(this, recipeOffset);
+                getRecipes.execute();
+            }
+        }
+    }
+
+    public void recipeRecieved(){
+        loadingRecipes = false;
+        setChanged();
+        notifyObservers();
+        saveData();
+    }
+
     public void checkOffItem(Item item){
         if(NetworkUtil.isConnected(context)) {
             CheckOffItem checkOffItem = new CheckOffItem(groceryListId, item, token);
@@ -179,6 +216,12 @@ public class Model extends Observable {
             saveData();
         }
     }
+
+
+    public int getRecipeOffset() {
+        return recipeOffset;
+    }
+
 
     public void setGroceryListId(long groceryListId) {
         this.groceryListId = groceryListId;
