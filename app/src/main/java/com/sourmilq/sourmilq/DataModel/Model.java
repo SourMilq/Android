@@ -152,15 +152,34 @@ public class Model extends Observable {
         applyChanges();
     }
 
-    public void deleteItem(Item item) {
+    private void deleteItem(Item item, long listID) {
         ServerTask serverTask = new ServerTask(ActionType.DELETE);
         serverTask.item = item;
-        serverTask.listid = groceryListId;
+        serverTask.listid = listID;
         taskQueue.add(serverTask);
         dequeueTasks();
+    }
 
-        groceryItems.remove(item);
+    public void deleteGroceryItem(Item item) {
+        for (Item i : groceryItems) {
+            if (item.equals(i)) {
+                groceryItems.remove(i);
+                break;
+            }
+        }
         applyChanges();
+        deleteItem(item, groceryListId);
+    }
+
+    public void deletePantryItem(Item item) {
+        for (Item i : pantryItems) {
+            if (item.equals(i)) {
+                pantryItems.remove(i);
+                break;
+            }
+        }
+        applyChanges();
+        deleteItem(item, pantryListId);
     }
 
     public void checkOffItem(Item item) {

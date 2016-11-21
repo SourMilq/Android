@@ -29,7 +29,8 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
 
     public PantryItemListAdapter(Context context, View containerView) {
         model = Model.getInstance(context);
-        mDataset = model.getPantryItems();
+        mDataset = new ArrayList<>(model.getPantryItems());
+        notifyDataSetChanged();
         model.addObserver(this);
 //        update(model, null);
         this.containerView = containerView;
@@ -48,9 +49,10 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
                 if (!(mDataset.get(i).equals(updatedDataset.get(i))))
                     break COMPARE_NEW;
             }
+            int i = 1;
             return;
         }
-        mDataset = updatedDataset;
+        mDataset = new ArrayList<>(updatedDataset);
         notifyDataSetChanged();
     }
 
@@ -87,7 +89,7 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
         return mDataset;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnLongClickListener*/ {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         public TextView mTextView;
         public PantryItemListAdapter mAdapter;
@@ -96,16 +98,16 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             super(v);
             mAdapter = adapter;
             mTextView = (TextView) v.findViewById(R.id.info_text);
-//            mTextView.setOnLongClickListener(this);
+            mTextView.setOnLongClickListener(this);
         }
 
-//        @Override
-//        public boolean onLongClick(View view) {
-//            int position = getLayoutPosition();
-////            mAdapter.remove(position);
-//
-//            mAdapter.model.deleteItem(mAdapter.getDataset().get(position));
-//            return true;
-//        }
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getLayoutPosition();
+            Item item = mAdapter.getDataset().get(position);
+            mAdapter.remove(position);
+            mAdapter.model.deletePantryItem(item);
+            return true;
+        }
     }
 }

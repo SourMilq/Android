@@ -120,7 +120,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             int position = getLayoutPosition();
             Item item = mAdapter.getDataset().get(position);
             mAdapter.remove(position);
-            mAdapter.model.deleteItem(item);
+            mAdapter.model.deleteGroceryItem(item);
             return true;
         }
     }
