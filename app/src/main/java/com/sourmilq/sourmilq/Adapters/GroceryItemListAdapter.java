@@ -32,7 +32,8 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     public GroceryItemListAdapter(Context context, View containerView) {
         model = Model.getInstance(context);
-        mDataset = model.getGroceryItems();
+        mDataset = new ArrayList<>(model.getGroceryItems());
+        notifyDataSetChanged();
         model.addObserver(this);
 //        update(model, null);
         this.containerView = containerView;
@@ -53,7 +54,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             }
             return;
         }
-        mDataset = updatedDataset;
+        mDataset = new ArrayList<>(updatedDataset);
         notifyDataSetChanged();
     }
 

@@ -62,8 +62,7 @@ public class SplashScreenActivity extends Activity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                model.updateGroceryList();
-                model.updatePantryList();
+                model.dequeueTasks();
                 handler.postDelayed(this, 10000);
             }
         };
