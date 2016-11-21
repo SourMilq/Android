@@ -55,8 +55,8 @@
 
         <activity
             android:name=".RecipeDetailActivity"
-            android:label="@string/cast_rewind">
-        </activity>
+            android:label="Recipes">
+        </activity> 
 
 
     </application>
