@@ -102,7 +102,7 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
         return mDataset;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnLongClickListener*/ {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         public TextView mTextView;
         public GroceryItemListAdapter mAdapter;
@@ -111,16 +111,16 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             super(v);
             mAdapter = adapter;
             mTextView = (TextView) v.findViewById(R.id.info_text);
-//            mTextView.setOnLongClickListener(this);
+            mTextView.setOnLongClickListener(this);
         }
 
-//        @Override
-//        public boolean onLongClick(View view) {
-//            int position = getLayoutPosition();
-////            mAdapter.remove(position);
-//
-//            mAdapter.model.deleteItem(mAdapter.getDataset().get(position));
-//            return true;
-//        }
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getLayoutPosition();
+            Item item = mAdapter.getDataset().get(position);
+            mAdapter.remove(position);
+            mAdapter.model.deleteItem(item);
+            return true;
+        }
     }
 }
