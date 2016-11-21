@@ -4,6 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by ajanthan on 16-10-15.
@@ -13,6 +17,7 @@ public class Item implements Serializable {
     private int numItems;
     private Double price;
     private long id;
+    private Calendar expiration;
 
     public Item(String name) {
         this(name, 1, 0.00, 0l);
@@ -49,12 +54,24 @@ public class Item implements Serializable {
         return id;
     }
 
+    public Calendar getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Calendar date) {
+        expiration = date;
+    }
+
     public JSONObject getJson(){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name",name);
             jsonObject.put("quantity",numItems);
             jsonObject.put("price",price);
+            if (expiration != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("expiration",sdf.format(expiration));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
