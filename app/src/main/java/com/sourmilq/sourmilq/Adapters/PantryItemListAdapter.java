@@ -56,8 +56,6 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             if (mDataset.size() != updatedDataset.size()) break COMPARE_NEW;
             int size = mDataset.size();
             for (int i = 0; i < size; i++) {
-//                int d1 = mDataset.get(i).getExpiration().get(Calendar.DAY_OF_MONTH);
-//                int d2 = updatedDataset.get(i).getExpiration().get(Calendar.DAY_OF_MONTH);
                 if (!(mDataset.get(i).equals(updatedDataset.get(i))) ||
                         !mDataset.get(i).sameDate(updatedDataset.get(i)))
                     break COMPARE_NEW;

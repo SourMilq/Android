@@ -94,17 +94,6 @@ public class Item implements Serializable {
     }
 
     public boolean sameDate(Item other) {
-        if (expiration != null && other.getExpiration() != null) {
-            int y1 = expiration.get(Calendar.YEAR);
-            int y2 = other.getExpiration().get(Calendar.YEAR);
-            int m1 =expiration.get(Calendar.MONTH);
-            int m2 =other.getExpiration().get(Calendar.MONTH);
-            int d1 = expiration.get(Calendar.DAY_OF_MONTH);
-            int d2 =other.getExpiration().get(Calendar.DAY_OF_MONTH);
-            boolean one =expiration.get(Calendar.YEAR) == other.getExpiration().get(Calendar.YEAR);
-            boolean two =expiration.get(Calendar.MONTH) == other.getExpiration().get(Calendar.MONTH);
-            boolean thr =expiration.get(Calendar.DAY_OF_MONTH) == other.getExpiration().get(Calendar.DAY_OF_MONTH);
-        }
         return expiration != null && other.getExpiration() != null &&
                 expiration.get(Calendar.YEAR) == other.getExpiration().get(Calendar.YEAR) &&
                 expiration.get(Calendar.MONTH) == other.getExpiration().get(Calendar.MONTH) &&

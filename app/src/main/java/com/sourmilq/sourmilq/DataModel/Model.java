@@ -204,7 +204,6 @@ public class Model extends Observable {
         for (int i = 0; i < pantryItems.size(); i++) {
             updatedItem = pantryItems.get(i);
             if (item.equals(updatedItem)) {
-                int dom = date.get(Calendar.DAY_OF_MONTH);
                 updatedItem.setExpiration(date);
                 applyChanges();
                 break;
