@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Observable;
 
 /**
@@ -196,6 +197,19 @@ public class Model extends Observable {
         }
         pantryItems.add(item);
         applyChanges();
+    }
+
+    public void setExpiration(Item item, Calendar date) {
+        Item updatedItem;
+        for (int i = 0; i < pantryItems.size(); i++) {
+            updatedItem = pantryItems.get(i);
+            if (item.equals(updatedItem)) {
+                int dom = date.get(Calendar.DAY_OF_MONTH);
+                updatedItem.setExpiration(date);
+                applyChanges();
+                break;
+            }
+        }
     }
 
     public void setGroceryListId(long groceryListId) {

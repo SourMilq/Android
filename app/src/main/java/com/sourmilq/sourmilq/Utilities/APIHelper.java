@@ -10,7 +10,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -159,10 +163,20 @@ public class APIHelper {
             JSONArray jsonItems = (JSONArray) list.get("items");
             for (int i = 0; i < jsonItems.length(); i++) {
                 JSONObject item = jsonItems.getJSONObject(i);
-                items.add(new Item(item.getString("name"),
+                Item newItem = new Item(item.getString("name"),
                         item.getInt("quantity"),
                         item.getDouble("price"),
-                        item.getLong("id")));
+                        item.getLong("id"));
+                if (item.has("expiration") &&
+                        !item.getString("expiration").isEmpty() &&
+                        !item.getString("expiration").equals("null")) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = sdf.parse(item.getString("expiration"));
+                    Calendar expiration = new GregorianCalendar();
+                    expiration.set(date.getYear(), date.getMonth(), date.getDay(), 12, 0, 0);
+                    newItem.setExpiration(expiration);
+                }
+                items.add(newItem);
             }
         } catch (Exception e) {
             e.printStackTrace();

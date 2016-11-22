@@ -1,5 +1,8 @@
 package com.sourmilq.sourmilq.Adapters;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.Fragments.GroceryListItemsFragment;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
@@ -29,14 +33,20 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
     private ArrayList<Item> mDataset;
     private Model model;
     private View containerView;
+    private GroceryListItemsFragment fragment;
 
-    public GroceryItemListAdapter(Context context, View containerView) {
+    public GroceryItemListAdapter(Context context, View containerView, GroceryListItemsFragment fragment) {
         model = Model.getInstance(context);
-        mDataset = new ArrayList<>(model.getGroceryItems());
+        mDataset = new ArrayList<>();
+        mDataset.clear();
+        for (Item item : model.getGroceryItems()) {
+            mDataset.add(new Item(item));
+        }
         notifyDataSetChanged();
         model.addObserver(this);
 //        update(model, null);
         this.containerView = containerView;
+        this.fragment = fragment;
     }
 
     @Override
@@ -54,7 +64,10 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
             }
             return;
         }
-        mDataset = new ArrayList<>(updatedDataset);
+        mDataset.clear();
+        for (Item item : updatedDataset) {
+            mDataset.add(new Item(item));
+        }
         notifyDataSetChanged();
     }
 
