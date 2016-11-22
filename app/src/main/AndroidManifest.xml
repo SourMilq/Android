@@ -45,14 +45,15 @@
             android:label="@string/signup_activity_title"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".RecipeActivity2"
-            android:label="@string/signup_activity_title"></activity>
-        <activity
             android:name=".RecipeDetailActivity"
             android:label="Recipes"></activity>
         <activity
             android:name=".RecipeActivity"
             android:label="@string/title_activity_recipe"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".RecipeRecommendationActivity"
+            android:label="Recipe Recommendation"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

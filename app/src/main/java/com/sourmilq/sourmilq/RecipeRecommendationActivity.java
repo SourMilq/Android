@@ -1,34 +1,41 @@
 package com.sourmilq.sourmilq;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
-import com.sourmilq.sourmilq.Adapters.ItemTabsPagerAdapter;
-import com.sourmilq.sourmilq.Fragments.GroceryListItemsFragment;
-import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
+import com.sourmilq.sourmilq.Adapters.RecipeRecyclerViewAdapter;
+import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.DataModel.Recipe;
 
-public class ItemsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        GroceryListItemsFragment.OnFragmentInteractionListener,
-        PantryItemsFragment.OnFragmentInteractionListener {
+import java.util.ArrayList;
 
-    public boolean expirationWarned;
+public class RecipeRecommendationActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    private RecyclerView rArticlesList;
+    private RecipeRecyclerViewAdapter recipeRecyclerViewAdapter;
+    private ProgressBar progressBar;
+    private Model model;
+    private Button btnReconnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_items);
+        setContentView(R.layout.activity_recipe);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -40,17 +47,25 @@ public class ItemsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        setUpRecipePage();
+    }
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private void setUpRecipePage(){
+//        setContentView(R.layout.recipe_list_view);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        ItemTabsPagerAdapter adapter = new ItemTabsPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        model = Model.getInstance(getApplicationContext());
 
-        expirationWarned = false;
+        rArticlesList = (RecyclerView) findViewById(R.id.articleList);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(this, true);
+        rArticlesList.setAdapter(recipeRecyclerViewAdapter);
+        rArticlesList.setLayoutManager(new LinearLayoutManager(this));
+
+        model.retrieveRecipeRecommondations();
     }
 
     @Override
@@ -92,28 +107,21 @@ public class ItemsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-            Intent intent = new Intent(ItemsActivity.this, RecipeRecommendationActivity.class);
-            startActivity(intent);
+
         } else if (id == R.id.recipe) {
-            Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
+            Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
             startActivity(intent);
         } else if (id == R.id.logout) {
-            Intent intent = new Intent(ItemsActivity.this, SplashScreenActivity.class);
+            Intent intent = new Intent(RecipeRecommendationActivity.this, SplashScreenActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.items) {
+            Intent intent = new Intent(RecipeRecommendationActivity.this, ItemsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void onGroceryListItemsFragmentInteraction(Uri uri) {
-
-    }
-
-    public void onPantryItemsFragmentInteraction(Uri uri) {
-
     }
 }

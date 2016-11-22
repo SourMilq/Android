@@ -64,7 +64,7 @@ public class RecipeActivity extends AppCompatActivity
 
         rArticlesList = (RecyclerView) findViewById(R.id.articleList);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(this, recipes);
+        recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(this, false);
         rArticlesList.setAdapter(recipeRecyclerViewAdapter);
         rArticlesList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -125,12 +125,12 @@ public class RecipeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-
+            Intent intent = new Intent(RecipeActivity.this, RecipeRecommendationActivity.class);
+            startActivity(intent);
         } else if (id == R.id.recipe) {
         } else if (id == R.id.logout) {
             Intent intent = new Intent(RecipeActivity.this, SplashScreenActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.items) {
             Intent intent = new Intent(RecipeActivity.this, ItemsActivity.class);
             startActivity(intent);
