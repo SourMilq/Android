@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Tasks.Authentication;
@@ -45,24 +45,23 @@ public class LoginActivity extends Activity implements onCallCompleted {
                 JSONObject jsonObject = new JSONObject();
                 String username = usernameET.getText().toString();
                 String password = passwordET.getText().toString();
-
-                if(!username.isEmpty() && !password.isEmpty()) {
+                if (!username.isEmpty() && !password.isEmpty()) {
+                    setUI(false);
                     try {
                         jsonObject.put("username", username);
                         jsonObject.put("password", password);
                     } catch (JSONException e) {
+                        setUI(true);
                         e.printStackTrace();
                     }
-                    if(NetworkUtil.isConnected(getApplicationContext())) {
+                    if (NetworkUtil.isConnected(getApplicationContext())) {
                         Authentication sendDataTask = new Authentication(LoginActivity.this, Authentication.AuthType.LOGIN, model);
                         sendDataTask.execute(jsonObject);
-                    }else{
-                        Toast.makeText(getApplicationContext(), "No Internet, Unable to Login",
-                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(v, "No Internet, unable to login", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), "please enter username and password",
-                            Toast.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(v, "Please enter username and password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
 
 
@@ -70,14 +69,20 @@ public class LoginActivity extends Activity implements onCallCompleted {
         });
     }
 
+    public void setUI(boolean clickable) {
+        usernameET.setEnabled(clickable);
+        passwordET.setEnabled(clickable);
+        loginBtn.setEnabled(clickable);
+    }
+
     @Override
     public void onTaskCompleted(boolean success) {
-        if(success){
+        if (success) {
             Intent intent = new Intent(LoginActivity.this, ItemsActivity.class);
             startActivity(intent);
-        }else{
-            Toast.makeText(getApplicationContext(), "Invalid username or password",
-                    Toast.LENGTH_LONG).show();
+        } else {
+            Snackbar.make(findViewById(android.R.id.content), "Invalid username or password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            setUI(true);
         }
 
     }

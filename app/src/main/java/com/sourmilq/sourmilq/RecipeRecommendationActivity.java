@@ -112,6 +112,7 @@ public class RecipeRecommendationActivity extends AppCompatActivity
             Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
             startActivity(intent);
         } else if (id == R.id.logout) {
+            model.logout();
             Intent intent = new Intent(RecipeRecommendationActivity.this, SplashScreenActivity.class);
             startActivity(intent);
 

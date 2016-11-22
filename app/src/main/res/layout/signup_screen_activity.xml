@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <ScrollView
@@ -12,7 +19,6 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
             android:orientation="vertical">
 
             <TextView
@@ -27,7 +33,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFF" />
+                android:textColor="#FFF"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:nextFocusForward="@+id/lastName"/>
 
 
             <TextView
@@ -38,11 +47,14 @@
                 android:textColor="#FFF" />
 
             <EditText
-                android:id="@+id/lastName"
+                android:id="@id/lastName"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFF" />
+                android:textColor="#FFF"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:nextFocusForward="@+id/email"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -52,11 +64,14 @@
                 android:textColor="#FFF" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@id/email"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFF" />
+                android:textColor="#FFF"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:nextFocusForward="@+id/username"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -66,11 +81,14 @@
                 android:textColor="#FFF" />
 
             <EditText
-                android:id="@+id/username"
+                android:id="@id/username"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFF" />
+                android:textColor="#FFF"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:nextFocusForward="@+id/password"/>
 
 
             <TextView
@@ -81,11 +99,14 @@
                 android:textColor="#FFF" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@id/password"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFF" />
+                android:textColor="#FFF"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:singleLine="true"/>
 
 
             <Button
@@ -93,9 +114,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:text="REGISTER"
-                android:textColor="#FFF" />
+                android:text="REGISTER" />
 
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

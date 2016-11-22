@@ -1,7 +1,6 @@
 package com.sourmilq.sourmilq.Fragments;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,17 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sourmilq.sourmilq.Adapters.ExpireListAdapter;
-import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
 import com.sourmilq.sourmilq.Adapters.PantryItemListAdapter;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.ItemsActivity;
 import com.sourmilq.sourmilq.R;
-import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 
 /**
@@ -230,7 +225,6 @@ public class PantryItemsFragment extends Fragment {
 //                        dataset.get(updatedPosition).setExpiration(expiration);
 //                        mAdapter.notifyItemChanged(updatedPosition);
 //                        mAdapter.getModel().setExpiration(item, expiration);
-                        Toast.makeText(getContext(), "go to calendar dialog", Toast.LENGTH_SHORT);
                         DialogFragment expFragment = new ExpirationPickerFragment();
                         Bundle args = new Bundle();
                         args.putSerializable("item", updatedItem);

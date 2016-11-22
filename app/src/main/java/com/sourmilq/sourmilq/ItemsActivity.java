@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sourmilq.sourmilq.Adapters.ItemTabsPagerAdapter;
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Fragments.GroceryListItemsFragment;
 import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
 
@@ -24,6 +25,7 @@ public class ItemsActivity extends AppCompatActivity
         PantryItemsFragment.OnFragmentInteractionListener {
 
     public boolean expirationWarned;
+    private Model model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class ItemsActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
 
         expirationWarned = false;
+        this.model = Model.getInstance(getApplicationContext());
     }
 
     @Override
@@ -98,6 +101,7 @@ public class ItemsActivity extends AppCompatActivity
             Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
             startActivity(intent);
         } else if (id == R.id.logout) {
+            model.logout();
             Intent intent = new Intent(ItemsActivity.this, SplashScreenActivity.class);
             startActivity(intent);
 

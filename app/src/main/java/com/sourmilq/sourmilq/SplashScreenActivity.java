@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
-
-import java.util.TimerTask;
 
 /**
  * Created by ajanthan on 16-10-15.
@@ -29,9 +26,10 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.splash_screen_activity);
         model = Model.getInstance(getApplicationContext());
 
-        if (model.getToken() != null) {
-//            mHandler = new Handler();
-//            mHandler.postDelayed(mUpdateTimeTask, 2000);
+        if (model.getToken() != null && !model.getToken().isEmpty()) {
+            mHandler = new Handler();
+            mHandler.postDelayed(mUpdateTimeTask, 2000);
+            return;
         }
 
         signUpBtn = (Button) findViewById(R.id.signupBtn);
@@ -55,7 +53,7 @@ public class SplashScreenActivity extends Activity {
             }
         });
 
-        if(!model.isUpdateCycleRunning()) {
+        if (!model.isUpdateCycleRunning()) {
             model.setUpdateCycleRunning(true);
             //Synchronization
             final Handler handler = new Handler();

@@ -277,6 +277,11 @@ public class Model extends Observable {
 
     }
 
+    public void logout(){
+        token ="";
+        saveData();
+    }
+
     public int getRecipeOffset() {
         return recipeOffset;
     }

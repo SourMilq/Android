@@ -24,10 +24,10 @@ public class Item implements Serializable {
     }
 
     public Item(String name, int numItems, Double price, Long id) {
-        this.name = name;
-        this.numItems = numItems;
-        this.price = price;
-        this.id = id;
+          this.name = name;
+           this.numItems = numItems;
+            this.price = price;
+         this.id = id;
     }
 
     public Item(Item other) {
