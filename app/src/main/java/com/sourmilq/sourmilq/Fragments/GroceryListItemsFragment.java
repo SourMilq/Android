@@ -24,6 +24,9 @@ import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.SimpleItemTouchHelperCallback;
 
+import java.util.ArrayList;
+import java.util.zip.Inflater;
+
 /**
  * A fragment with a Google +1 button.
  * Activities that contain this fragment must implement the
@@ -53,6 +56,9 @@ public class GroceryListItemsFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Model model;
+
+    private LayoutInflater mInflater;
+    private View mView;
 
     public GroceryListItemsFragment() {
         // Required empty public constructor
@@ -89,6 +95,8 @@ public class GroceryListItemsFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mInflater = inflater;
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_grocery_list_items, container, false);
 
@@ -99,7 +107,7 @@ public class GroceryListItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view);
+        mAdapter = new GroceryItemListAdapter(getActivity().getApplicationContext(), view, this);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
@@ -211,5 +219,4 @@ public class GroceryListItemsFragment extends Fragment {
         // TODO: Update argument type and name
         void onGroceryListItemsFragmentInteraction(Uri uri);
     }
-
 }

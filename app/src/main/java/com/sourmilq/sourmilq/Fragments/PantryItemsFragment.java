@@ -1,20 +1,34 @@
 package com.sourmilq.sourmilq.Fragments;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sourmilq.sourmilq.Adapters.ExpireListAdapter;
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
 import com.sourmilq.sourmilq.Adapters.PantryItemListAdapter;
+import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.ItemsActivity;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -39,6 +53,8 @@ public class PantryItemsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private PantryItemListAdapter mAdapter;
+
+    private LayoutInflater mInflater;
 
     public PantryItemsFragment() {
         // Required empty public constructor
@@ -75,6 +91,8 @@ public class PantryItemsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        this.mInflater = inflater;
+
         View view = inflater.inflate(R.layout.fragment_pantry_items, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -84,9 +102,36 @@ public class PantryItemsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new PantryItemListAdapter(getActivity().getApplicationContext(), view); // TODO change to pantry adapter
+        mAdapter = new PantryItemListAdapter(getActivity().getApplicationContext(), view, this);
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
+
+        ItemsActivity activity = (ItemsActivity) getActivity();
+
+        if (!activity.expirationWarned) {
+            activity.expirationWarned = true;
+
+            ArrayList<Item> expired = new ArrayList<>();
+            ArrayList<Item> soon = new ArrayList<>();
+
+            Calendar now = Calendar.getInstance();
+            Calendar later = Calendar.getInstance();
+            later.add(Calendar.DATE, 2);
+
+            for (Item item : mAdapter.getDataset()) {
+                Calendar expiration = item.getExpiration();
+                if (expiration == null) continue;
+
+                if (now.after(expiration)) {
+                    expired.add(item);
+                } else if (later.after(expiration)) {
+                    soon.add(item);
+                }
+            }
+
+            showPantryWarnExpireDialog(expired, soon);
+        }
+
         return view;
     }
 
@@ -127,5 +172,133 @@ public class PantryItemsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onPantryItemsFragmentInteraction(Uri uri);
+    }
+
+    public void showPantryItemEditDialog(final int position) {
+        final Item item = mAdapter.getDataset().get(position);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Actions for " + item.getName());
+
+        String[] options = {"Edit Expiration", "Delete", "Cancel"};
+
+        alertDialog.setItems(options, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Item updatedItem;
+                int updatedPosition;
+                ArrayList<Item> dataset = mAdapter.getDataset();
+                ITEM_SEARCH:
+                {
+                    for (updatedPosition = 0; updatedPosition < dataset.size(); updatedPosition++) {
+                        updatedItem = dataset.get(updatedPosition);
+                        if (updatedItem.equals(item)) {
+                            break ITEM_SEARCH;
+                        }
+                    }
+                    // item not found
+                    Toast.makeText(getContext(), "Error: can't find item", Toast.LENGTH_SHORT);
+                    dialog.cancel();
+                    return;
+                }
+                switch (which) {
+                    case 0: // edit expiration
+                        // calendar dialog
+//                        Calendar expiration = new GregorianCalendar();
+//
+//                        dataset.get(updatedPosition).setExpiration(expiration);
+//                        mAdapter.notifyItemChanged(updatedPosition);
+//                        mAdapter.getModel().setExpiration(item, expiration);
+                        Toast.makeText(getContext(), "go to calendar dialog", Toast.LENGTH_SHORT);
+                        DialogFragment expFragment = new ExpirationPickerFragment();
+                        Bundle args = new Bundle();
+                        args.putSerializable("item", updatedItem);
+                        expFragment.setArguments(args);
+                        expFragment.show(getActivity().getFragmentManager(), "expirationDatePicker");
+                        break;
+                    case 1: // delete
+                        mAdapter.remove(updatedPosition);
+                        mAdapter.getModel().deletePantryItem(updatedItem);
+                        break;
+                    case 2:
+                        dialog.cancel();
+                        break;
+                }
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void showPantryWarnExpireDialog(ArrayList<Item> expired, ArrayList<Item> soon) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Warning");
+
+        final View expirationWarningAlertView = mInflater
+                .inflate(R.layout.alert_expiration_warning, null);
+        final TextView expiredText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expiredText);
+        final RecyclerView expiredItemsView = (RecyclerView) expirationWarningAlertView
+                .findViewById(R.id.expiredItemsView);
+        final TextView expireSoonText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expireSoonText);
+        final RecyclerView expireSoonItemsView = (RecyclerView) expirationWarningAlertView
+                .findViewById(R.id.expireSoonItemsView);
+
+        if (expired.isEmpty()) {
+            expiredText.setVisibility(View.INVISIBLE);
+            expiredItemsView.setVisibility(View.INVISIBLE);
+        } else {
+            // use a linear layout manager
+            RecyclerView.LayoutManager RLayoutManager = new LinearLayoutManager(getActivity());
+            expiredItemsView.setLayoutManager(RLayoutManager);
+
+            // specify an adapter (see also next example)
+            ExpireListAdapter adapter = new ExpireListAdapter(expired);
+            expiredItemsView.setAdapter(adapter);
+        }
+
+        if (soon.isEmpty()) {
+            expireSoonText.setVisibility(View.INVISIBLE);
+            expireSoonItemsView.setVisibility(View.INVISIBLE);
+        } else {
+            // use a linear layout manager
+            RecyclerView.LayoutManager RLayoutManager = new LinearLayoutManager(getActivity());
+            expireSoonItemsView.setLayoutManager(RLayoutManager);
+
+            // specify an adapter (see also next example)
+            ExpireListAdapter adapter = new ExpireListAdapter(soon);
+            expireSoonItemsView.setAdapter(adapter);
+        }
+
+        alertDialog.setView(expirationWarningAlertView);
+        alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void editExpiration(Item item, Calendar date) {
+        Item updatedItem;
+        int updatedPosition;
+        ArrayList<Item> dataset = mAdapter.getDataset();
+        ITEM_SEARCH:
+        {
+            for (updatedPosition = 0; updatedPosition < dataset.size(); updatedPosition++) {
+                updatedItem = dataset.get(updatedPosition);
+                if (updatedItem.equals(item)) {
+                    break ITEM_SEARCH;
+                }
+            }
+            // item not found
+            Toast.makeText(getContext(), "Error: can't find item", Toast.LENGTH_SHORT);
+            return;
+        }
+
+        mAdapter.remove(updatedPosition);
+        mAdapter.getModel().setExpiration(updatedItem, date);
     }
 }

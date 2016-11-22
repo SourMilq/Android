@@ -11,7 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,6 +156,18 @@ public class APIHelper {
         }
     }
 
+    public static void setExpiration(String token, long listId, JSONObject jsonObject, long itemId) {
+        String url = domain + "/v1/list/"+ listId+"/item/"+ itemId+"/update";
+        try {
+            //constants
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST,url,jsonObject);
+            httpObject.setToken(token);
+            httpObject = HttpRequestHelper.postRequest(httpObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void addRecipeItems(String token, long recipeId) {
         String url = domain + "/v1/recipe/" + recipeId + "/add";
         try {
@@ -197,10 +213,23 @@ public class APIHelper {
             JSONArray jsonItems = (JSONArray) list.get("items");
             for (int i = 0; i < jsonItems.length(); i++) {
                 JSONObject item = jsonItems.getJSONObject(i);
-                items.add(new Item(item.getString("name"),
+                Item newItem = new Item(item.getString("name"),
                         item.getInt("quantity"),
                         item.getDouble("price"),
-                        item.getLong("id")));
+                        item.getLong("id"));
+                if (item.has("expiration") &&
+                        !item.getString("expiration").isEmpty() &&
+                        !item.getString("expiration").equals("null")) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = sdf.parse(item.getString("expiration"));
+                    Calendar expiration = new GregorianCalendar();
+                    expiration.setTime(date);
+                    expiration.set(expiration.get(Calendar.YEAR),
+                            expiration.get(Calendar.MONTH),
+                            expiration.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
+                    newItem.setExpiration(expiration);
+                }
+                items.add(newItem);
             }
         } catch (Exception e) {
             e.printStackTrace();
