@@ -30,15 +30,14 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     private Context mContext;
     private int currentPostion;
     private Model model;
+    private boolean isRecommendation;
 
-    public RecipeRecyclerViewAdapter(Context context, ArrayList<Recipe> articles) {
+    public RecipeRecyclerViewAdapter(Context context, boolean isRecommendation) {
         mInflate = LayoutInflater.from(context);
 
-        if(articles!=null){
-            this.recipes =articles;
-        }
-        mContext = context;
-        model = Model.getInstance(context);
+        this.mContext = context;
+        this.model = Model.getInstance(context);
+        this.isRecommendation = isRecommendation;
         model.addObserver(this);
     }
 
@@ -73,13 +72,14 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         return currentPostion;
     }
 
-    public ArrayList<Recipe> getRecipes(){
+    public ArrayList<Recipe> getRecipes() {
         return recipes;
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        recipes = model.getRecipes();
+        if (isRecommendation) recipes = model.getRecipesRecommendations();
+        else recipes = model.getRecipes();
         notifyDataSetChanged();
     }
 

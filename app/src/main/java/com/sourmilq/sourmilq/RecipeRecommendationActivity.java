@@ -2,18 +2,15 @@ package com.sourmilq.sourmilq;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -25,7 +22,7 @@ import com.sourmilq.sourmilq.DataModel.Recipe;
 
 import java.util.ArrayList;
 
-public class RecipeActivity extends AppCompatActivity
+public class RecipeRecommendationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -64,26 +61,11 @@ public class RecipeActivity extends AppCompatActivity
 
         rArticlesList = (RecyclerView) findViewById(R.id.articleList);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(this, false);
+        recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(this, true);
         rArticlesList.setAdapter(recipeRecyclerViewAdapter);
         rArticlesList.setLayoutManager(new LinearLayoutManager(this));
 
-        model.getRecipe();
-
-        rArticlesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                int totalItemCount = recipeRecyclerViewAdapter.getItemCount();
-                int firstVisibleItem = recipeRecyclerViewAdapter.getCurrentPostion();
-
-                if(model.getRecipeOffset()-2<firstVisibleItem){
-                    model.getRecipe();
-                    Log.e("blah","need to load more");
-                }
-            }
-        });
+        model.retrieveRecipeRecommondations();
     }
 
     @Override
@@ -125,14 +107,16 @@ public class RecipeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-            Intent intent = new Intent(RecipeActivity.this, RecipeRecommendationActivity.class);
-            startActivity(intent);
+
         } else if (id == R.id.recipe) {
-        } else if (id == R.id.logout) {
-            Intent intent = new Intent(RecipeActivity.this, SplashScreenActivity.class);
+            Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
             startActivity(intent);
+        } else if (id == R.id.logout) {
+            Intent intent = new Intent(RecipeRecommendationActivity.this, SplashScreenActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.items) {
-            Intent intent = new Intent(RecipeActivity.this, ItemsActivity.class);
+            Intent intent = new Intent(RecipeRecommendationActivity.this, ItemsActivity.class);
             startActivity(intent);
         }
 

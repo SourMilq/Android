@@ -176,6 +176,19 @@ public class APIHelper {
         }
     }
 
+    public static ArrayList<Recipe> getRecipeRecommentations(String token) {
+        String url = domain + "/v1/recipe/suggest";
+        try {
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET, url);
+            httpObject.setToken(token);
+            String result = HttpRequestHelper.getRequest(httpObject);
+            return parseRecipe(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static ArrayList<Item> parseItems(String result) {
         ArrayList<Item> items = new ArrayList<>();
         try {

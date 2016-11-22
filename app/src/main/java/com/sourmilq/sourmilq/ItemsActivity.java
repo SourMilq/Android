@@ -88,7 +88,8 @@ public class ItemsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-
+            Intent intent = new Intent(ItemsActivity.this, RecipeRecommendationActivity.class);
+            startActivity(intent);
         } else if (id == R.id.recipe) {
             Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
             startActivity(intent);
