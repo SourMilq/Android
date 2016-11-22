@@ -45,7 +45,7 @@ public class LoginActivity extends Activity implements onCallCompleted {
                 JSONObject jsonObject = new JSONObject();
                 String username = usernameET.getText().toString();
                 String password = passwordET.getText().toString();
-
+                setUI(false);
                 if(!username.isEmpty() && !password.isEmpty()) {
                     try {
                         jsonObject.put("username", username);
@@ -70,6 +70,12 @@ public class LoginActivity extends Activity implements onCallCompleted {
         });
     }
 
+    public void setUI(boolean clickable){
+        usernameET.setEnabled(clickable);
+        passwordET.setEnabled(clickable);
+        loginBtn.setEnabled(clickable);
+    }
+
     @Override
     public void onTaskCompleted(boolean success) {
         if(success){
@@ -78,6 +84,7 @@ public class LoginActivity extends Activity implements onCallCompleted {
         }else{
             Toast.makeText(getApplicationContext(), "Invalid username or password",
                     Toast.LENGTH_LONG).show();
+            setUI(true);
         }
 
     }
