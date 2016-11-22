@@ -21,7 +21,7 @@ import java.util.Observable;
  * Created by ajanthan on 16-10-15.
  */
 public class Model extends Observable {
-    public enum ActionType {ADD, UPDATE, DELETE, GETLIST}
+    public enum ActionType {ADD, DONE, DELETE, GETLIST}
 
     public boolean isTaskRunning;
 
@@ -184,7 +184,7 @@ public class Model extends Observable {
     }
 
     public void checkOffItem(Item item) {
-        ServerTask serverTask = new ServerTask(ActionType.UPDATE);
+        ServerTask serverTask = new ServerTask(ActionType.DONE);
         serverTask.item = item;
         taskQueue.add(serverTask);
         dequeueTasks();
@@ -253,7 +253,7 @@ public class Model extends Observable {
                 case GETLIST:
                     updateItems();
                     break;
-                case UPDATE:
+                case DONE:
                     checkOffItemTask(serverTask);
                     break;
             }
