@@ -49,6 +49,7 @@ public class Model extends Observable {
         isTaskRunning = false;
             recipes = new ArrayList<>();
             recipeOffset=0;
+
     }
 
     public static Model getInstance(Context context) {
@@ -178,18 +179,6 @@ public class Model extends Observable {
         dequeueTasks();
     }
 
-
-    public void deleteItem(Item item) {
-        ServerTask serverTask = new ServerTask(ActionType.DELETE);
-        serverTask.item = item;
-        serverTask.listid = groceryListId;
-        taskQueue.add(serverTask);
-        dequeueTasks();
-
-        groceryItems.remove(item);
-        applyChanges();
-    }
-
     public void getRecipe(){
         if(NetworkUtil.isConnected(context)) {
             if(!loadingRecipes){
@@ -208,7 +197,19 @@ public class Model extends Observable {
         saveData();
     }
 
-    public void checkOffItem(Item item){
+
+    public void deleteItem(Item item) {
+        ServerTask serverTask = new ServerTask(ActionType.DELETE);
+        serverTask.item = item;
+        serverTask.listid = groceryListId;
+        taskQueue.add(serverTask);
+        dequeueTasks();
+
+        groceryItems.remove(item);
+        applyChanges();
+    }
+
+    public void checkOffItem(Item item) {
         ServerTask serverTask = new ServerTask(ActionType.UPDATE);
         serverTask.item = item;
         taskQueue.add(serverTask);
@@ -287,7 +288,7 @@ public class Model extends Observable {
         addRecipeItems.execute();
     }
 
-    private void addDeleteItemTask(ServerTask serverTask) {
+private void addDeleteItemTask(ServerTask serverTask) {
         AddDeleteItem addDeleteItem = new AddDeleteItem(serverTask.actionType, serverTask.listid, serverTask.item, token, this);
         addDeleteItem.execute();
     }
