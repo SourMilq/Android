@@ -69,7 +69,9 @@ public class HttpRequestHelper {
         StringBuilder result = new StringBuilder();
         HttpURLConnection conn = (HttpURLConnection) httpObject.getUrl().openConnection();
         conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization", "Bearer " + httpObject.getToken());
+        if(httpObject.getToken()!=null && !httpObject.getToken().isEmpty()) {
+            conn.setRequestProperty("Authorization", "Bearer " + httpObject.getToken());
+        }
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
         while ((line = rd.readLine()) != null) {

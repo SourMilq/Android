@@ -48,6 +48,17 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".RecipeActivity"
+            android:label="@string/signup_activity_title">
+        </activity>
+
+        <activity
+            android:name=".RecipeDetailActivity"
+            android:label="Recipes">
+        </activity> 
+
+
     </application>
 
 
