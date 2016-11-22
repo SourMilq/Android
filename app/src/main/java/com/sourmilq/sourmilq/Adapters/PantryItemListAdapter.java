@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
+import com.sourmilq.sourmilq.ItemsActivity;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 

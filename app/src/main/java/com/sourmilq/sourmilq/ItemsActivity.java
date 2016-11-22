@@ -22,6 +22,8 @@ public class ItemsActivity extends AppCompatActivity
         GroceryListItemsFragment.OnFragmentInteractionListener,
         PantryItemsFragment.OnFragmentInteractionListener {
 
+    public boolean expirationWarned;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,8 @@ public class ItemsActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        expirationWarned = false;
     }
 
     @Override

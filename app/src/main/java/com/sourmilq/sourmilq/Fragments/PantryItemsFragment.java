@@ -14,12 +14,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourmilq.sourmilq.Adapters.ExpireListAdapter;
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
 import com.sourmilq.sourmilq.Adapters.PantryItemListAdapter;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.ItemsActivity;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
@@ -102,6 +105,33 @@ public class PantryItemsFragment extends Fragment {
         mAdapter = new PantryItemListAdapter(getActivity().getApplicationContext(), view, this);
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
+
+        ItemsActivity activity = (ItemsActivity) getActivity();
+
+        if (!activity.expirationWarned) {
+            activity.expirationWarned = true;
+
+            ArrayList<Item> expired = new ArrayList<>();
+            ArrayList<Item> soon = new ArrayList<>();
+
+            Calendar now = Calendar.getInstance();
+            Calendar later = Calendar.getInstance();
+            later.add(Calendar.DATE, 2);
+
+            for (Item item : mAdapter.getDataset()) {
+                Calendar expiration = item.getExpiration();
+                if (expiration == null) continue;
+
+                if (now.after(expiration)) {
+                    expired.add(item);
+                } else if (later.after(expiration)) {
+                    soon.add(item);
+                }
+            }
+
+            showPantryWarnExpireDialog(expired, soon);
+        }
+
         return view;
     }
 
@@ -193,6 +223,58 @@ public class PantryItemsFragment extends Fragment {
                         dialog.cancel();
                         break;
                 }
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void showPantryWarnExpireDialog(ArrayList<Item> expired, ArrayList<Item> soon) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Warning");
+
+        final View expirationWarningAlertView = mInflater
+                .inflate(R.layout.alert_expiration_warning, null);
+        final TextView expiredText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expiredText);
+        final RecyclerView expiredItemsView = (RecyclerView) expirationWarningAlertView
+                .findViewById(R.id.expiredItemsView);
+        final TextView expireSoonText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expireSoonText);
+        final RecyclerView expireSoonItemsView = (RecyclerView) expirationWarningAlertView
+                .findViewById(R.id.expireSoonItemsView);
+
+        if (expired.isEmpty()) {
+            expiredText.setVisibility(View.INVISIBLE);
+            expiredItemsView.setVisibility(View.INVISIBLE);
+        } else {
+            // use a linear layout manager
+            RecyclerView.LayoutManager RLayoutManager = new LinearLayoutManager(getActivity());
+            expiredItemsView.setLayoutManager(RLayoutManager);
+
+            // specify an adapter (see also next example)
+            ExpireListAdapter adapter = new ExpireListAdapter(expired);
+            expiredItemsView.setAdapter(adapter);
+        }
+
+        if (soon.isEmpty()) {
+            expireSoonText.setVisibility(View.INVISIBLE);
+            expireSoonItemsView.setVisibility(View.INVISIBLE);
+        } else {
+            // use a linear layout manager
+            RecyclerView.LayoutManager RLayoutManager = new LinearLayoutManager(getActivity());
+            expireSoonItemsView.setLayoutManager(RLayoutManager);
+
+            // specify an adapter (see also next example)
+            ExpireListAdapter adapter = new ExpireListAdapter(soon);
+            expireSoonItemsView.setAdapter(adapter);
+        }
+
+        alertDialog.setView(expirationWarningAlertView);
+        alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
 
