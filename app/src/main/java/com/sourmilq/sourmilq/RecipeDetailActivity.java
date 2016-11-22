@@ -2,7 +2,10 @@ package com.sourmilq.sourmilq;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +38,10 @@ public class RecipeDetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_detail_view);
 
+        ActionBar actionBar = getSupportActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         model = Model.getInstance(getApplicationContext());
         tvTitle = (TextView) findViewById(R.id.title);
         tvText = (TextView) findViewById(R.id.body);
@@ -59,4 +66,5 @@ public class RecipeDetailActivity extends AppCompatActivity{
             }
         });
     }
+
 }
