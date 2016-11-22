@@ -55,17 +55,19 @@ public class SplashScreenActivity extends Activity {
             }
         });
 
-        //Synchronization
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                model.dequeueTasks();
-                handler.postDelayed(this, 10000);
-            }
-        };
-        handler.postDelayed(runnable, 100);
-
+        if(!model.isUpdateCycleRunning()) {
+            model.setUpdateCycleRunning(true);
+            //Synchronization
+            final Handler handler = new Handler();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    model.dequeueTasks();
+                    handler.postDelayed(this, 10000);
+                }
+            };
+            handler.postDelayed(runnable, 100);
+        }
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {

@@ -40,6 +40,8 @@ public class Model extends Observable {
     private boolean loadingRecipes;
     private int recipeOffset;
 
+    private boolean isUpdateCycleRunning = false;
+
     private ArrayList<ServerTask> taskQueue;
 
     private Model() {
@@ -47,8 +49,8 @@ public class Model extends Observable {
         pantryItems = new ArrayList<>();
         taskQueue = new ArrayList<>();
         isTaskRunning = false;
-            recipes = new ArrayList<>();
-            recipeOffset=0;
+        recipes = new ArrayList<>();
+        recipeOffset = 0;
 
     }
 
@@ -111,7 +113,7 @@ public class Model extends Observable {
         dequeueTasks();
     }
 
-    public void addRecipes(ArrayList<Recipe> newRecipes){
+    public void addRecipes(ArrayList<Recipe> newRecipes) {
         recipes.addAll(newRecipes);
         setChanged();
         notifyObservers();
@@ -179,18 +181,18 @@ public class Model extends Observable {
         dequeueTasks();
     }
 
-    public void getRecipe(){
-        if(NetworkUtil.isConnected(context)) {
-            if(!loadingRecipes){
+    public void getRecipe() {
+        if (NetworkUtil.isConnected(context)) {
+            if (!loadingRecipes) {
                 loadingRecipes = true;
-                recipeOffset+=10;
+                recipeOffset += 10;
                 GetRecipes getRecipes = new GetRecipes(this, recipeOffset);
                 getRecipes.execute();
             }
         }
     }
 
-    public void recipeRecieved(){
+    public void recipeRecieved() {
         loadingRecipes = false;
         setChanged();
         notifyObservers();
@@ -249,6 +251,14 @@ public class Model extends Observable {
         saveData();
     }
 
+    public boolean isUpdateCycleRunning() {
+        return isUpdateCycleRunning;
+    }
+
+    public void setUpdateCycleRunning(boolean updateCycleRunning) {
+        isUpdateCycleRunning = updateCycleRunning;
+    }
+
     ///////////////////QUEUE METHODS//////////////////////////
 
     public void finishedTasks() {
@@ -284,11 +294,11 @@ public class Model extends Observable {
     }
 
     private void addRecipeItemTask(ServerTask serverTask) {
-        AddRecipeItems addRecipeItems = new AddRecipeItems(this,serverTask.recipe.getId());
+        AddRecipeItems addRecipeItems = new AddRecipeItems(this, serverTask.recipe.getId());
         addRecipeItems.execute();
     }
 
-private void addDeleteItemTask(ServerTask serverTask) {
+    private void addDeleteItemTask(ServerTask serverTask) {
         AddDeleteItem addDeleteItem = new AddDeleteItem(serverTask.actionType, serverTask.listid, serverTask.item, token, this);
         addDeleteItem.execute();
     }
