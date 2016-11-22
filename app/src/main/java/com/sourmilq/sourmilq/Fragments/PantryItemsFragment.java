@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sourmilq.sourmilq.Adapters.GroceryItemListAdapter;
@@ -195,6 +196,23 @@ public class PantryItemsFragment extends Fragment {
                 }
             }
         });
+
+        alertDialog.show();
+    }
+
+    public void showPantryWarnExpireDialog(ArrayList<Item> soon, ArrayList<Item> expired) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Warning");
+
+
+        final View expirationWarningAlertView = mInflater
+                .inflate(R.layout.alert_expiration_warning, null);
+        final TextView expiredText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expiredText);
+        //List view
+        final TextView expireSoonText = (TextView) expirationWarningAlertView
+                .findViewById(R.id.expireSoonText);
+        //List view
 
         alertDialog.show();
     }
