@@ -68,29 +68,6 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             mDataset.add(new Item(item));
         }
         notifyDataSetChanged();
-        ItemsActivity activity = (ItemsActivity) fragment.getActivity();
-
-        if (!activity.expirationWarned) {
-            activity.expirationWarned = true;
-
-            ArrayList<Item> soon = new ArrayList<>();
-            ArrayList<Item> expired = new ArrayList<>();
-
-            Calendar now = Calendar.getInstance();
-            Calendar earlier = Calendar.getInstance();
-            earlier.add(Calendar.DATE, -2);
-
-            for (Item item : mDataset) {
-                Calendar expiration = item.getExpiration();
-                if (now.after(expiration)) {
-                    expired.add(item);
-                } else if (now.after(earlier)) {
-                    soon.add(item);
-                }
-            }
-
-            fragment.showPantryWarnExpireDialog(soon, expired);
-        }
     }
 
     @Override

@@ -18,18 +18,18 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/expiredItemsView" />
 
         <TextView
-            android:text="Expire soon:"
+            android:text="\nExpire soon:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/expireSoonText" />
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/expireSoonItemsView" />
 
     </LinearLayout>
