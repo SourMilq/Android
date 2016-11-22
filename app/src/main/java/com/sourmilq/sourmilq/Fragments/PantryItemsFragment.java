@@ -129,7 +129,7 @@ public class PantryItemsFragment extends Fragment {
                 }
             }
 
-            showPantryWarnExpireDialog(expired, soon);
+            if (!expired.isEmpty() || !soon.isEmpty()) showPantryWarnExpireDialog(expired, soon);
         }
 
         return view;
