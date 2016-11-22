@@ -53,7 +53,7 @@ public class SignUpActivity extends Activity implements onCallCompleted {
                 String lastName = lastNameET.getText().toString();
                 String email = emailET.getText().toString();
                 String username = usernameET.getText().toString();
-                String password = usernameET.getText().toString();
+                String password = passwordET.getText().toString();
                 if(!(firstName.isEmpty() || lastName.isEmpty() ||
                         email.isEmpty() || username.isEmpty() || password.isEmpty())) {
                     try {

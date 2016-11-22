@@ -1,5 +1,6 @@
 package com.sourmilq.sourmilq.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,13 @@ import android.widget.TextView;
 
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Model;
+import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
 import com.sourmilq.sourmilq.R;
 import com.sourmilq.sourmilq.callBacks.onCallCompleted;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -26,13 +30,20 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
     private ArrayList<Item> mDataset;
     private Model model;
     private View containerView;
+    private PantryItemsFragment fragment;
 
-    public PantryItemListAdapter(Context context, View containerView) {
+    public PantryItemListAdapter(Context context, View containerView, PantryItemsFragment fragment) {
         model = Model.getInstance(context);
-        mDataset = model.getPantryItems();
+        mDataset = new ArrayList<>();
+        mDataset.clear();
+        for (Item item : model.getPantryItems()) {
+            mDataset.add(new Item(item));
+        }
+        notifyDataSetChanged();
         model.addObserver(this);
 //        update(model, null);
         this.containerView = containerView;
+        this.fragment = fragment;
     }
 
     @Override
@@ -45,12 +56,16 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             if (mDataset.size() != updatedDataset.size()) break COMPARE_NEW;
             int size = mDataset.size();
             for (int i = 0; i < size; i++) {
-                if (!(mDataset.get(i).equals(updatedDataset.get(i))))
+                if (!(mDataset.get(i).equals(updatedDataset.get(i))) ||
+                        !mDataset.get(i).sameDate(updatedDataset.get(i)))
                     break COMPARE_NEW;
             }
             return;
         }
-        mDataset = updatedDataset;
+        mDataset.clear();
+        for (Item item : updatedDataset) {
+            mDataset.add(new Item(item));
+        }
         notifyDataSetChanged();
     }
 
@@ -65,7 +80,12 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mDataset.get(position);
-        holder.mTextView.setText(item.getName() + " (" + item.getNumItems() + ")");
+        String expString = "null";
+        if (item.getExpiration() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            expString = sdf.format(item.getExpiration().getTime());
+        }
+        holder.mTextView.setText(item.getName() + "(" + item.getNumItems() + ")" + expString);
     }
 
     @Override
@@ -87,7 +107,15 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
         return mDataset;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnLongClickListener*/ {
+    public void showPantryItemEditDialog(int position) {
+        fragment.showPantryItemEditDialog(position);
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
         public TextView mTextView;
         public PantryItemListAdapter mAdapter;
@@ -96,16 +124,14 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             super(v);
             mAdapter = adapter;
             mTextView = (TextView) v.findViewById(R.id.info_text);
-//            mTextView.setOnLongClickListener(this);
+            mTextView.setOnLongClickListener(this);
         }
 
-//        @Override
-//        public boolean onLongClick(View view) {
-//            int position = getLayoutPosition();
-////            mAdapter.remove(position);
-//
-//            mAdapter.model.deleteItem(mAdapter.getDataset().get(position));
-//            return true;
-//        }
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getLayoutPosition();
+            mAdapter.showPantryItemEditDialog(position);
+            return true;
+        }
     }
 }

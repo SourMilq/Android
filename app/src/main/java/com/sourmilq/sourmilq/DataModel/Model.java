@@ -8,6 +8,7 @@ import com.sourmilq.sourmilq.Tasks.AddRecipeItems;
 import com.sourmilq.sourmilq.Tasks.CheckOffItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
 import com.sourmilq.sourmilq.Tasks.GetRecipes;
+import com.sourmilq.sourmilq.Tasks.SetExpirationItem;
 import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 import java.io.FileInputStream;
@@ -16,13 +17,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Observable;
 
 /**
  * Created by ajanthan on 16-10-15.
  */
 public class Model extends Observable {
-    public enum ActionType {ADD, UPDATE, DELETE, GETLIST, ADDRECIPE}
+    public enum ActionType {ADD, DONE, DELETE, GETLIST, UPDATE, ADDRECIPE};
 
     public boolean isTaskRunning;
 
@@ -198,19 +200,38 @@ public class Model extends Observable {
     }
 
 
-    public void deleteItem(Item item) {
+    public void deleteItem(Item item, long listID) {
         ServerTask serverTask = new ServerTask(ActionType.DELETE);
         serverTask.item = item;
-        serverTask.listid = groceryListId;
+        serverTask.listid = listID;
         taskQueue.add(serverTask);
         dequeueTasks();
+    }
 
-        groceryItems.remove(item);
+    public void deleteGroceryItem(Item item) {
+        for (Item i : groceryItems) {
+            if (item.equals(i)) {
+                groceryItems.remove(i);
+                break;
+            }
+        }
         applyChanges();
+        deleteItem(item, groceryListId);
+    }
+
+    public void deletePantryItem(Item item) {
+        for (Item i : pantryItems) {
+            if (item.equals(i)) {
+                pantryItems.remove(i);
+                break;
+            }
+        }
+        applyChanges();
+        deleteItem(item, pantryListId);
     }
 
     public void checkOffItem(Item item) {
-        ServerTask serverTask = new ServerTask(ActionType.UPDATE);
+        ServerTask serverTask = new ServerTask(ActionType.DONE);
         serverTask.item = item;
         taskQueue.add(serverTask);
         dequeueTasks();
@@ -223,6 +244,25 @@ public class Model extends Observable {
         }
         pantryItems.add(item);
         applyChanges();
+    }
+
+    public void setExpiration(Item item, Calendar date) {
+        Item updatedItem = item;
+        for (int i = 0; i < pantryItems.size(); i++) {
+            updatedItem = pantryItems.get(i);
+            if (item.equals(updatedItem)) {
+                updatedItem.setExpiration(date);
+                applyChanges();
+                break;
+            }
+        }
+
+        ServerTask serverTask = new ServerTask(ActionType.UPDATE);
+        serverTask.item = updatedItem;
+        serverTask.listid = pantryListId;
+        taskQueue.add(serverTask);
+        dequeueTasks();
+
     }
 
 
@@ -273,8 +313,11 @@ public class Model extends Observable {
                 case GETLIST:
                     updateItems();
                     break;
-                case UPDATE:
+                case DONE:
                     checkOffItemTask(serverTask);
+                    break;
+                case UPDATE:
+                    setExpirationTask(serverTask);
                     break;
                 case ADDRECIPE:
                     addRecipeItemTask(serverTask);
@@ -283,12 +326,17 @@ public class Model extends Observable {
         }
     }
 
+    private void setExpirationTask(ServerTask serverTask) {
+        SetExpirationItem setExpirationItem = new SetExpirationItem(serverTask.listid,serverTask.item,token,this);
+        setExpirationItem.execute();
+    }
+
     private void addRecipeItemTask(ServerTask serverTask) {
         AddRecipeItems addRecipeItems = new AddRecipeItems(this,serverTask.recipe.getId());
         addRecipeItems.execute();
     }
 
-private void addDeleteItemTask(ServerTask serverTask) {
+    private void addDeleteItemTask(ServerTask serverTask) {
         AddDeleteItem addDeleteItem = new AddDeleteItem(serverTask.actionType, serverTask.listid, serverTask.item, token, this);
         addDeleteItem.execute();
     }
