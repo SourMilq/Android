@@ -42,7 +42,7 @@ public class SplashScreenActivity extends Activity {
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SplashScreenActivity.this, RecipeActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });
