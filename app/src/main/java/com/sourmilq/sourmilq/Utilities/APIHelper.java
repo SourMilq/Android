@@ -155,6 +155,18 @@ public class APIHelper {
         }
     }
 
+    public static void setExpiration(String token, long listId, JSONObject jsonObject, long itemId) {
+        String url = domain + "/v1/list/"+ listId+"/item/"+ itemId+"/update";
+        try {
+            //constants
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST,url,jsonObject);
+            httpObject.setToken(token);
+            httpObject = HttpRequestHelper.postRequest(httpObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static ArrayList<Item> parseItems(String result) {
         ArrayList<Item> items = new ArrayList<>();
         try {
