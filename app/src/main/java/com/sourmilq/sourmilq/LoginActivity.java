@@ -79,6 +79,7 @@ public class LoginActivity extends Activity implements onCallCompleted {
     public void onTaskCompleted(boolean success) {
         if (success) {
             Intent intent = new Intent(LoginActivity.this, ItemsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {
             Snackbar.make(findViewById(android.R.id.content), "Invalid username or password", Snackbar.LENGTH_LONG).setAction("Action", null).show();

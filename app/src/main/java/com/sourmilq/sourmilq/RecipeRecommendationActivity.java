@@ -47,6 +47,8 @@ public class RecipeRecommendationActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.recipeRecommendations);
+
         setUpRecipePage();
     }
 
@@ -111,14 +113,17 @@ public class RecipeRecommendationActivity extends AppCompatActivity
         } else if (id == R.id.recipe) {
             Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.logout) {
             model.logout();
             Intent intent = new Intent(RecipeRecommendationActivity.this, SplashScreenActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.items) {
             Intent intent = new Intent(RecipeRecommendationActivity.this, ItemsActivity.class);
             startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
