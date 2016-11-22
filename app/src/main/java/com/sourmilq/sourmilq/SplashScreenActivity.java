@@ -29,9 +29,10 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.splash_screen_activity);
         model = Model.getInstance(getApplicationContext());
 
-        if (model.getToken() != null) {
-//            mHandler = new Handler();
-//            mHandler.postDelayed(mUpdateTimeTask, 2000);
+        if (model.getToken() != null && !model.getToken().isEmpty()) {
+            mHandler = new Handler();
+            mHandler.postDelayed(mUpdateTimeTask, 2000);
+            return;
         }
 
         signUpBtn = (Button) findViewById(R.id.signupBtn);

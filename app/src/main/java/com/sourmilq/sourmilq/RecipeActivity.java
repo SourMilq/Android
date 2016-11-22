@@ -129,6 +129,7 @@ public class RecipeActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.recipe) {
         } else if (id == R.id.logout) {
+            model.logout();
             Intent intent = new Intent(RecipeActivity.this, SplashScreenActivity.class);
             startActivity(intent);
         } else if (id == R.id.items) {

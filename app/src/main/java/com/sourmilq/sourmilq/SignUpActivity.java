@@ -54,6 +54,7 @@ public class SignUpActivity extends Activity implements onCallCompleted {
                 String email = emailET.getText().toString();
                 String username = usernameET.getText().toString();
                 String password = passwordET.getText().toString();
+                setUI(false);
                 if(!(firstName.isEmpty() || lastName.isEmpty() ||
                         email.isEmpty() || username.isEmpty() || password.isEmpty())) {
                     try {
@@ -79,12 +80,24 @@ public class SignUpActivity extends Activity implements onCallCompleted {
             }
         });
     }
+
+    public void setUI(boolean clickable){
+        firstNameET.setEnabled(clickable);
+        lastNameET.setEnabled(clickable);
+        usernameET.setEnabled(clickable);
+        passwordET.setEnabled(clickable);
+        emailET.setEnabled(clickable);
+        registerBtn.setEnabled(clickable);
+    }
+
+
     @Override
     public void onTaskCompleted(boolean success) {
         if(success){
             Intent intent = new Intent(SignUpActivity.this, ItemsActivity.class);
             startActivity(intent);
         }else{
+            setUI(true);
             Toast.makeText(getApplicationContext(), "Username already exists",
                     Toast.LENGTH_LONG).show();
         }
