@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,6 +59,9 @@ public class PantryItemsFragment extends Fragment {
 
     private LayoutInflater mInflater;
 
+    private Model model;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     public PantryItemsFragment() {
         // Required empty public constructor
     }
@@ -85,6 +91,7 @@ public class PantryItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        this.model = Model.getInstance(getActivity().getApplicationContext());
     }
 
     @Override
@@ -105,6 +112,21 @@ public class PantryItemsFragment extends Fragment {
         mAdapter = new PantryItemListAdapter(getActivity().getApplicationContext(), view, this);
         mRecyclerView.setAdapter(mAdapter);
         // Inflate the layout for this fragment
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pantrySwipeContainer);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                model.updateList();
+                Snackbar.make(mRecyclerView, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorAccent, R.color.colorPrimary);
 
         ItemsActivity activity = (ItemsActivity) getActivity();
 
@@ -300,5 +322,9 @@ public class PantryItemsFragment extends Fragment {
 
         mAdapter.remove(updatedPosition);
         mAdapter.getModel().setExpiration(updatedItem, date);
+    }
+
+    public void setDoneUpdating() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

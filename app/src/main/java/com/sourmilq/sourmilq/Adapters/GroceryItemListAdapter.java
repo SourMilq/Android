@@ -51,6 +51,8 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     @Override
     public void update(Observable observable, Object data) {
+        fragment.setDoneUpdating();
+
         ArrayList<Item> updatedDataset = model.getGroceryItems();
 
         // only notify changes if changes exist (makes UI look better)

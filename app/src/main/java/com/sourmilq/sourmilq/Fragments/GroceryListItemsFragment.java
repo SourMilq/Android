@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -59,6 +61,8 @@ public class GroceryListItemsFragment extends Fragment {
 
     private LayoutInflater mInflater;
     private View mView;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public GroceryListItemsFragment() {
         // Required empty public constructor
@@ -114,6 +118,21 @@ public class GroceryListItemsFragment extends Fragment {
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.grocerySwipeContainer);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                model.updateList();
+                Snackbar.make(mRecyclerView, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorAccent, R.color.colorPrimary);
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,15 +180,6 @@ public class GroceryListItemsFragment extends Fragment {
             }
         });
 
-        FloatingActionButton updateButton = (FloatingActionButton) view.findViewById(R.id.update_button);
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                model.updateList();
-                Snackbar.make(v, "Updating...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });
-
         return view;
     }
 
@@ -203,6 +213,10 @@ public class GroceryListItemsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void setDoneUpdating() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**
