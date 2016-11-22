@@ -8,6 +8,7 @@ public class ServerTask {
     public Model.ActionType actionType;
     public Item item;
     public long listid;
+    public Recipe recipe;
 
     public ServerTask(Model.ActionType actionType){
            this.actionType = actionType;

@@ -28,8 +28,6 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_activity);
         model = Model.getInstance(getApplicationContext());
-        Toast.makeText(getApplicationContext(), model.getToken(),
-                Toast.LENGTH_LONG).show();
 
         if (model.getToken() != null) {
 //            mHandler = new Handler();
