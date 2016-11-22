@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.DataModel.Recipe;
 import com.squareup.picasso.Picasso;
 
@@ -27,12 +28,14 @@ public class RecipeDetailActivity extends AppCompatActivity{
     private FloatingActionButton fabFavourite;
 
     private Recipe recipe;
+    private Model model;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_detail_view);
 
+        model = Model.getInstance(getApplicationContext());
         tvTitle = (TextView) findViewById(R.id.title);
         tvText = (TextView) findViewById(R.id.body);
         tvPreparationTime = (TextView) findViewById(R.id.preparationTime);
@@ -52,6 +55,7 @@ public class RecipeDetailActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Adding ingredients to grocery list",
                         Toast.LENGTH_LONG).show();
+                model.addRecipeItem(recipe);
             }
         });
     }

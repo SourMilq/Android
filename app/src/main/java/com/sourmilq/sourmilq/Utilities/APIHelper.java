@@ -152,6 +152,18 @@ public class APIHelper {
         }
     }
 
+    public static void addRecipeItems(String token, long recipeId) {
+        String url = domain + "/v1/recipe/" + recipeId + "/add";
+        try {
+            //constants
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET, url);
+            httpObject.setToken(token);
+            HttpRequestHelper.getRequest(httpObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ArrayList<Recipe> getRecipe(String token, int index) {
         String url = domain + "/v1/recipe?offset=" + index + "&limit=10";
         try {
@@ -195,13 +207,14 @@ public class APIHelper {
                 String title = "", text = "", imageUrl = "", preparationMinutes = "";
                 if (item.has("id")) id = item.getLong("id");
                 if (item.has("title")) title = item.getString("title");
-                if (item.has("text")){
+                if (item.has("text")) {
                     text = item.getString("text");
-                    text = text.replace("                        ","");
-                    text = text.replace("\n","\n\n");
-                    Log.e("blah",text);
+                    text = text.replace("                        ", "");
+                    text = text.replace("\n", "\n\n");
+                    Log.e("blah", text);
                 }
-                if (item.has("cookingMinutes")) preparationMinutes = item.getString("cookingMinutes");
+                if (item.has("cookingMinutes"))
+                    preparationMinutes = item.getString("cookingMinutes");
                 if (item.has("imageUrl")) imageUrl = item.getString("imageUrl");
                 recipes.add(new Recipe(id, title, text, preparationMinutes, imageUrl));
             }
