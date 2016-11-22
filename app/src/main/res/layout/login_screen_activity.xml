@@ -26,8 +26,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="#FFFFFF" />
-
+                android:textColor="#FFFFFF"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:nextFocusForward="@+id/password"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -37,12 +39,14 @@
                 android:textColor="#FFFFFF" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@id/password"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:inputType="textPassword"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
 
 
             <Button

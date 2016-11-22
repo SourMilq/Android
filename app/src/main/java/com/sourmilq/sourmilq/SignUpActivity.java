@@ -3,11 +3,10 @@ package com.sourmilq.sourmilq;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Tasks.Authentication;
@@ -54,9 +53,9 @@ public class SignUpActivity extends Activity implements onCallCompleted {
                 String email = emailET.getText().toString();
                 String username = usernameET.getText().toString();
                 String password = passwordET.getText().toString();
-                setUI(false);
-                if(!(firstName.isEmpty() || lastName.isEmpty() ||
+                if (!(firstName.isEmpty() || lastName.isEmpty() ||
                         email.isEmpty() || username.isEmpty() || password.isEmpty())) {
+                    setUI(false);
                     try {
                         jsonObject.put("first_name", firstName);
                         jsonObject.put("last_name", lastName);
@@ -65,23 +64,22 @@ public class SignUpActivity extends Activity implements onCallCompleted {
                         jsonObject.put("password", password);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        setUI(true);
                     }
                     if (NetworkUtil.isConnected(getApplicationContext())) {
                         Authentication sendDataTask = new Authentication(SignUpActivity.this, Authentication.AuthType.SIGNUP, model);
                         sendDataTask.execute(jsonObject);
                     } else {
-                        Toast.makeText(getApplicationContext(), "No Internet, Unable to Sign Up",
-                                Toast.LENGTH_LONG).show();
+                        Snackbar.make(v, "No Internet, unable to login", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), "Make sure no fields are empty",
-                            Toast.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(v, "Make sure all fields are filled in", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             }
         });
     }
 
-    public void setUI(boolean clickable){
+    public void setUI(boolean clickable) {
         firstNameET.setEnabled(clickable);
         lastNameET.setEnabled(clickable);
         usernameET.setEnabled(clickable);
@@ -93,13 +91,12 @@ public class SignUpActivity extends Activity implements onCallCompleted {
 
     @Override
     public void onTaskCompleted(boolean success) {
-        if(success){
+        if (success) {
             Intent intent = new Intent(SignUpActivity.this, ItemsActivity.class);
             startActivity(intent);
-        }else{
+        } else {
             setUI(true);
-            Toast.makeText(getApplicationContext(), "Username already exists",
-                    Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), "No Internet, unable to login", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
 }
