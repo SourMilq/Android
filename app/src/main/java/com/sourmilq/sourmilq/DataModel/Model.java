@@ -7,6 +7,7 @@ import com.sourmilq.sourmilq.Tasks.AddDeleteItem;
 import com.sourmilq.sourmilq.Tasks.AddRecipeItems;
 import com.sourmilq.sourmilq.Tasks.CheckOffItem;
 import com.sourmilq.sourmilq.Tasks.GetItem;
+import com.sourmilq.sourmilq.Tasks.GetRecipeRecommendation;
 import com.sourmilq.sourmilq.Tasks.GetRecipes;
 import com.sourmilq.sourmilq.Tasks.SetExpirationItem;
 import com.sourmilq.sourmilq.Utilities.NetworkUtil;
@@ -24,7 +25,9 @@ import java.util.Observable;
  * Created by ajanthan on 16-10-15.
  */
 public class Model extends Observable {
-    public enum ActionType {ADD, DONE, DELETE, GETLIST, UPDATE, ADDRECIPE};
+    public enum ActionType {ADD, DONE, DELETE, GETLIST, UPDATE, ADDRECIPE}
+
+    ;
 
     public boolean isTaskRunning;
 
@@ -34,6 +37,7 @@ public class Model extends Observable {
     private ArrayList<Item> groceryItems;
     private ArrayList<Item> pantryItems;
     private ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> recipesRecommendations;
     private long groceryListId;
     private long pantryListId;
     private String token;
@@ -52,6 +56,7 @@ public class Model extends Observable {
         taskQueue = new ArrayList<>();
         isTaskRunning = false;
         recipes = new ArrayList<>();
+        recipesRecommendations = new ArrayList<>();
         recipeOffset = 0;
 
     }
@@ -248,6 +253,11 @@ public class Model extends Observable {
         applyChanges();
     }
 
+    public void retrieveRecipeRecommondations() {
+        GetRecipeRecommendation getRecipeRecommendation = new GetRecipeRecommendation(this);
+        getRecipeRecommendation.execute();
+    }
+
     public void setExpiration(Item item, Calendar date) {
         Item updatedItem = item;
         for (int i = 0; i < pantryItems.size(); i++) {
@@ -267,7 +277,6 @@ public class Model extends Observable {
 
     }
 
-
     public int getRecipeOffset() {
         return recipeOffset;
     }
@@ -285,7 +294,16 @@ public class Model extends Observable {
         this.pantryListId = pantryListId;
     }
 
-    private void applyChanges() {
+    public ArrayList<Recipe> getRecipesRecommendations() {
+        return recipesRecommendations;
+    }
+
+    public void setRecipesRecommendations(ArrayList<Recipe> recipesRecommendations) {
+        this.recipesRecommendations = recipesRecommendations;
+    }
+
+
+    public void applyChanges() {
         setChanged();
         notifyObservers();
         saveData();
@@ -337,7 +355,7 @@ public class Model extends Observable {
     }
 
     private void setExpirationTask(ServerTask serverTask) {
-        SetExpirationItem setExpirationItem = new SetExpirationItem(serverTask.listid,serverTask.item,token,this);
+        SetExpirationItem setExpirationItem = new SetExpirationItem(serverTask.listid, serverTask.item, token, this);
         setExpirationItem.execute();
     }
 
