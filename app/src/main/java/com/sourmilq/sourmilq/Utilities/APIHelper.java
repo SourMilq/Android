@@ -185,7 +185,10 @@ public class APIHelper {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Date date = sdf.parse(item.getString("expiration"));
                     Calendar expiration = new GregorianCalendar();
-                    expiration.set(date.getYear(), date.getMonth(), date.getDay(), 12, 0, 0);
+                    expiration.setTime(date);
+                    expiration.set(expiration.get(Calendar.YEAR),
+                            expiration.get(Calendar.MONTH),
+                            expiration.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
                     newItem.setExpiration(expiration);
                 }
                 items.add(newItem);

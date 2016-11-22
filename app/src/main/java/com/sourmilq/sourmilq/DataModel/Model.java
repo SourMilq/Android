@@ -201,7 +201,7 @@ public class Model extends Observable {
     }
 
     public void setExpiration(Item item, Calendar date) {
-        Item updatedItem;
+        Item updatedItem = item;
         for (int i = 0; i < pantryItems.size(); i++) {
             updatedItem = pantryItems.get(i);
             if (item.equals(updatedItem)) {
@@ -212,7 +212,7 @@ public class Model extends Observable {
         }
 
         ServerTask serverTask = new ServerTask(ActionType.UPDATE);
-        serverTask.item = item;
+        serverTask.item = updatedItem;
         serverTask.listid = pantryListId;
         taskQueue.add(serverTask);
         dequeueTasks();
