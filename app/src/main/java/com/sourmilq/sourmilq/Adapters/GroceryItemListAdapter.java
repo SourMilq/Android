@@ -78,7 +78,14 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mDataset.get(position);
-        holder.mTextView.setText(item.getName() + " (" + item.getNumItems() + ")");
+        String priceString = "unspecified";
+        Double price = item.getPrice();
+        if (price != null) {
+            priceString = String.format("%.2f", price);
+        }
+        holder.tvName.setText(item.getName());
+        holder.tvQuantity.setText("Quantity: " + item.getNumItems());
+        holder.tvPrice.setText("Price: " + priceString);
     }
 
     @Override
@@ -114,14 +121,18 @@ public class GroceryItemListAdapter extends RecyclerView.Adapter<GroceryItemList
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-        public TextView mTextView;
+        public TextView tvName;
+        public TextView tvQuantity;
+        public TextView tvPrice;
         public GroceryItemListAdapter mAdapter;
 
         public ViewHolder(GroceryItemListAdapter adapter, View v) {
             super(v);
             mAdapter = adapter;
-            mTextView = (TextView) v.findViewById(R.id.info_text);
-            mTextView.setOnLongClickListener(this);
+            tvName = (TextView) v.findViewById(R.id.info_text_grocery);
+            tvQuantity = (TextView) v.findViewById(R.id.quantity_text_grocery);
+            tvPrice = (TextView) v.findViewById(R.id.price_text_grocery);
+            v.setOnLongClickListener(this);
         }
 
         @Override

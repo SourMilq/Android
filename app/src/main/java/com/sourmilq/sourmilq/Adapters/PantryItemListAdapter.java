@@ -1,8 +1,6 @@
 package com.sourmilq.sourmilq.Adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,12 +106,14 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Item item = mDataset.get(position);
-        String expString = "null";
+        String expString = "unspecified";
         if (item.getExpiration() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             expString = sdf.format(item.getExpiration().getTime());
         }
-        holder.mTextView.setText(item.getName() + "(" + item.getNumItems() + ")" + expString);
+        holder.tvName.setText(item.getName());
+        holder.tvQuantity.setText("Quantity: " + item.getNumItems());
+        holder.tvExpiration.setText("Expires on: " + expString);
     }
 
     @Override
@@ -145,14 +145,18 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-        public TextView mTextView;
+        public TextView tvName;
+        public TextView tvQuantity;
+        public TextView tvExpiration;
         public PantryItemListAdapter mAdapter;
 
         public ViewHolder(PantryItemListAdapter adapter, View v) {
             super(v);
             mAdapter = adapter;
-            mTextView = (TextView) v.findViewById(R.id.info_text);
-            mTextView.setOnLongClickListener(this);
+            tvName = (TextView) v.findViewById(R.id.info_text_pantry);
+            tvQuantity = (TextView) v.findViewById(R.id.quantity_text_pantry);
+            tvExpiration = (TextView) v.findViewById(R.id.expiration_text_pantry);
+            v.setOnLongClickListener(this);
         }
 
         @Override

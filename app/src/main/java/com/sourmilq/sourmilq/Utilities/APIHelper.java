@@ -233,7 +233,8 @@ public class APIHelper {
                         item.getLong("id"));
                 if (item.has("expiration") &&
                         !item.getString("expiration").isEmpty() &&
-                        !item.getString("expiration").equals("null")) {
+                        !item.getString("expiration").equals("null") &&
+                        !item.getString("expiration").equals("unspecified")) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Date date = sdf.parse(item.getString("expiration"));
                     Calendar expiration = new GregorianCalendar();
