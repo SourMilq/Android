@@ -5,6 +5,7 @@ import android.util.Log;
 import com.sourmilq.sourmilq.DataModel.HttpObject;
 import com.sourmilq.sourmilq.DataModel.Item;
 import com.sourmilq.sourmilq.DataModel.Recipe;
+import com.sourmilq.sourmilq.DataModel.RecipeIngredients;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -157,10 +158,10 @@ public class APIHelper {
     }
 
     public static void setExpiration(String token, long listId, JSONObject jsonObject, long itemId) {
-        String url = domain + "/v1/list/"+ listId+"/item/"+ itemId+"/update";
+        String url = domain + "/v1/list/" + listId + "/item/" + itemId + "/update";
         try {
             //constants
-            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST,url,jsonObject);
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.POST, url, jsonObject);
             httpObject.setToken(token);
             httpObject = HttpRequestHelper.postRequest(httpObject);
         } catch (Exception e) {
@@ -186,6 +187,19 @@ public class APIHelper {
             HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET, url);
             String result = HttpRequestHelper.getRequest(httpObject);
             return parseRecipe(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ArrayList<RecipeIngredients> getRecipeIngredients(String token, long recipeId) {
+        String url = domain + "/v1/recipe/" + recipeId + "/ingredients";
+        try {
+            HttpObject httpObject = new HttpObject(HttpObject.RequestType.GET, url);
+            httpObject.setToken(token);
+            String result = HttpRequestHelper.getRequest(httpObject);
+            return parseRecipeItems(result);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -266,5 +280,23 @@ public class APIHelper {
         }
         return recipes;
     }
+
+    private static ArrayList<RecipeIngredients> parseRecipeItems(String result) {
+        ArrayList<RecipeIngredients> recipeItems = new ArrayList<>();
+        try {
+            JSONObject jsonObj = new JSONObject(result);
+            JSONArray jsonItems = (JSONArray) jsonObj.get("ingredients");
+            for (int i = 0; i < jsonItems.length(); i++) {
+                JSONObject item = jsonItems.getJSONObject(i);
+                recipeItems.add(new RecipeIngredients(item.getString("name")));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return recipeItems;
+    }
+
 
 }

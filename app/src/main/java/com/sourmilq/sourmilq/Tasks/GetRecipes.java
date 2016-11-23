@@ -32,10 +32,13 @@ public class GetRecipes extends AsyncTask<JSONObject, Void, ArrayList<Recipe>> {
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Recipe> a) {
-        model.addRecipes(a);
+    protected void onPostExecute(ArrayList<Recipe> recipes) {
+        for(Recipe r: recipes){
+            new GetRecipesItems(model,r).execute();
+        }
+        model.addRecipes(recipes);
         model.recipeRecieved();
-        super.onPostExecute(a);
+        super.onPostExecute(recipes);
     }
 }
 

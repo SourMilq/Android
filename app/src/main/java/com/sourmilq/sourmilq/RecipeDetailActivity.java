@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.DataModel.Recipe;
+import com.sourmilq.sourmilq.DataModel.RecipeIngredients;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -26,6 +27,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvText;
     private TextView tvPreparationTime;
+    private TextView tvIngredients;
     private ImageView ivImage;
     private FloatingActionButton fabFavourite;
 
@@ -40,11 +42,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         model = Model.getInstance(getApplicationContext());
         tvTitle = (TextView) findViewById(R.id.title);
         tvText = (TextView) findViewById(R.id.body);
         tvPreparationTime = (TextView) findViewById(R.id.preparationTime);
+        tvIngredients = (TextView) findViewById(R.id.ingredients);
         ivImage = (ImageView) findViewById(R.id.img);
         fabFavourite = (FloatingActionButton) findViewById(R.id.favouriteButton);
 
@@ -63,6 +65,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 model.addRecipeItem(recipe);
             }
         });
+        String ingredients = "";
+        for(RecipeIngredients r:recipe.getIngredients()){
+            ingredients+="- "+r.getName()+"\n";
+        }
+        tvIngredients.setText(ingredients);
     }
 
     @Override
