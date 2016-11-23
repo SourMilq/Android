@@ -54,6 +54,7 @@ public class ItemsActivity extends AppCompatActivity
 
         expirationWarned = false;
         this.model = Model.getInstance(getApplicationContext());
+        model.dequeueTasks();
     }
 
     @Override
