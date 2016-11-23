@@ -49,8 +49,6 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
 
     @Override
     public void update(Observable observable, Object data) {
-        fragment.setDoneUpdating();
-
         ArrayList<Item> updatedDataset = model.getPantryItems();
 
         // only notify changes if changes exist (makes UI look better)
@@ -70,6 +68,31 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
             mDataset.add(new Item(item));
         }
         notifyDataSetChanged();
+
+        ItemsActivity activity = (ItemsActivity) fragment.getActivity();
+        if (activity != null && !activity.expirationWarned) {
+            activity.expirationWarned = true;
+
+            ArrayList<Item> expired = new ArrayList<>();
+            ArrayList<Item> soon = new ArrayList<>();
+
+            Calendar now = Calendar.getInstance();
+            Calendar later = Calendar.getInstance();
+            later.add(Calendar.DATE, 2);
+
+            for (Item item : mDataset) {
+                Calendar expiration = item.getExpiration();
+                if (expiration == null) continue;
+
+                if (now.after(expiration)) {
+                    expired.add(item);
+                } else if (later.after(expiration)) {
+                    soon.add(item);
+                }
+            }
+
+            if (!expired.isEmpty() || !soon.isEmpty()) fragment.showPantryWarnExpireDialog(expired, soon);
+        }
     }
 
     @Override
