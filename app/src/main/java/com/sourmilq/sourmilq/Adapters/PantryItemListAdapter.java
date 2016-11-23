@@ -49,6 +49,8 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
 
     @Override
     public void update(Observable observable, Object data) {
+        fragment.setDoneUpdating();
+
         ArrayList<Item> updatedDataset = model.getPantryItems();
 
         // only notify changes if changes exist (makes UI look better)
