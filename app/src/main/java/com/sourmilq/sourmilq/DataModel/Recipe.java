@@ -1,6 +1,7 @@
 package com.sourmilq.sourmilq.DataModel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by ajanthan on 2016-11-20.
@@ -15,6 +16,7 @@ public class Recipe implements Serializable{
     private String imageUrl;
     boolean isVegetarian;
     boolean isVegan;
+    ArrayList<RecipeIngredients> ingredients;
 
     public Recipe(long id, String title, String text, String preparationTime, String imageUrl) {
         this.id = id;
@@ -22,6 +24,7 @@ public class Recipe implements Serializable{
         this.text = text;
         this.preparationTime = preparationTime;
         this.imageUrl = imageUrl;
+        ingredients = new ArrayList<>();
     }
 
     public long getId() {
@@ -50,5 +53,13 @@ public class Recipe implements Serializable{
 
     public boolean isVegan() {
         return isVegan;
+    }
+
+    public ArrayList<RecipeIngredients> getIngredients(){
+        return ingredients;
+    }
+
+    public void setIngredients(ArrayList<RecipeIngredients> ingredients){
+        this.ingredients = ingredients;
     }
 }

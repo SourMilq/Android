@@ -56,11 +56,36 @@
                 android:textColor="#fff"
                 android:textSize="13dp" />
             <TextView
-                android:id="@+id/body"
+                android:id="@+id/ingredientTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingredients"
                 android:layout_below="@id/preparationTime"
+                android:padding="20dp"
+                android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/ingredients"
+                android:layout_below="@id/ingredientTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:textSize="15dp" />
+            <TextView
+                android:id="@+id/bodyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instructctions"
+                android:layout_below="@id/ingredients"
                 android:padding="20dp"
+                android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/body"
+                android:layout_below="@id/bodyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:paddingBottom="20dp"
                 android:textSize="15dp" />
         </RelativeLayout>
     </ScrollView>

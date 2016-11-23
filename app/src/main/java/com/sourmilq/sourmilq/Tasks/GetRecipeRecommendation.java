@@ -29,10 +29,13 @@ public class GetRecipeRecommendation extends AsyncTask<JSONObject, Void, ArrayLi
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Recipe> a) {
-        model.setRecipesRecommendations(a);
+    protected void onPostExecute(ArrayList<Recipe> recipes) {
+        for(Recipe r: recipes){
+            new GetRecipesItems(model,r).execute();
+        }
+        model.setRecipesRecommendations(recipes);
         model.applyChanges();
-        super.onPostExecute(a);
+        super.onPostExecute(recipes);
     }
 }
 
