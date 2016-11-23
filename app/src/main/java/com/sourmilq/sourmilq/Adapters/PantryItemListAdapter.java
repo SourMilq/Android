@@ -70,7 +70,7 @@ public class PantryItemListAdapter extends RecyclerView.Adapter<PantryItemListAd
         notifyDataSetChanged();
 
         ItemsActivity activity = (ItemsActivity) fragment.getActivity();
-        if (!activity.expirationWarned) {
+        if (activity != null && !activity.expirationWarned) {
             activity.expirationWarned = true;
 
             ArrayList<Item> expired = new ArrayList<>();

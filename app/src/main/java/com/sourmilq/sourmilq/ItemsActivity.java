@@ -42,6 +42,7 @@ public class ItemsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.items);
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -98,13 +99,16 @@ public class ItemsActivity extends AppCompatActivity
         if (id == R.id.recipeRecommendations) {
             Intent intent = new Intent(ItemsActivity.this, RecipeRecommendationActivity.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.recipe) {
             Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.logout) {
             model.logout();
             Intent intent = new Intent(ItemsActivity.this, SplashScreenActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.items) {
         }
