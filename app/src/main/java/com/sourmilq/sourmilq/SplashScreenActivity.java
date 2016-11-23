@@ -71,6 +71,7 @@ public class SplashScreenActivity extends Activity {
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             Intent intent = new Intent(SplashScreenActivity.this, ItemsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     };
