@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import com.sourmilq.sourmilq.Adapters.RecipeRecyclerViewAdapter;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.DataModel.Recipe;
+import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 import java.util.ArrayList;
 
@@ -127,9 +128,13 @@ public class RecipeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-            Intent intent = new Intent(RecipeActivity.this, RecipeRecommendationActivity.class);
-            startActivity(intent);
-            finish();
+            if(NetworkUtil.isConnected(getApplicationContext())) {
+                Intent intent = new Intent(RecipeActivity.this, RecipeRecommendationActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                Snackbar.make(findViewById(android.R.id.content), "No Internet, connect to access recipes recommendations", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
         } else if (id == R.id.recipe) {
         } else if (id == R.id.logout) {
             model.logout();
