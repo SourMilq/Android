@@ -123,31 +123,6 @@ public class PantryItemsFragment extends Fragment {
             });
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorAccent, R.color.colorPrimary);
 
-        ItemsActivity activity = (ItemsActivity) getActivity();
-
-        if (!activity.expirationWarned) {
-            activity.expirationWarned = true;
-            ArrayList<Item> expired = new ArrayList<>();
-            ArrayList<Item> soon = new ArrayList<>();
-
-            Calendar now = Calendar.getInstance();
-            Calendar later = Calendar.getInstance();
-            later.add(Calendar.DATE, 2);
-
-            for (Item item : mAdapter.getDataset()) {
-                Calendar expiration = item.getExpiration();
-                if (expiration == null) continue;
-
-                if (now.after(expiration)) {
-                    expired.add(item);
-                } else if (later.after(expiration)) {
-                    soon.add(item);
-                }
-            }
-
-             if (!expired.isEmpty() || !soon.isEmpty()) showPantryWarnExpireDialog(expired, soon);
-        }
-
         return view;
     }
 

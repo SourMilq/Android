@@ -26,7 +26,7 @@ public class ItemsActivity extends AppCompatActivity
         GroceryListItemsFragment.OnFragmentInteractionListener,
         PantryItemsFragment.OnFragmentInteractionListener {
 
-    public boolean expirationWarned;
+    public boolean expirationWarned = false;
     private Model model;
 
     @Override
@@ -55,7 +55,6 @@ public class ItemsActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        expirationWarned = false;
         this.model = Model.getInstance(getApplicationContext());
         model.dequeueTasks();
     }

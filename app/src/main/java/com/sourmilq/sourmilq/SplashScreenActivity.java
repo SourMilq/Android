@@ -61,7 +61,7 @@ public class SplashScreenActivity extends Activity {
                 @Override
                 public void run() {
                     model.dequeueTasks();
-                    handler.postDelayed(this, 10000);
+                    handler.postDelayed(this, 1000);
                 }
             };
             handler.postDelayed(runnable, 100);

@@ -97,6 +97,8 @@ public class Model extends Observable {
 
         PersistentData pData = new PersistentData(instance);
         try {
+            Model m = instance;
+            Context c = m.context;
             FileOutputStream fos = instance.context.openFileOutput(
                     PersistentData.PERTISTENT_DATA_FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
@@ -108,6 +110,25 @@ public class Model extends Observable {
             Log.e(className, "couldn't save data");
             e.printStackTrace();
         }
+    }
+
+    public static void nukeData() {
+        Context oldContext = instance.context;
+        instance = new Model();
+        instance.context = oldContext;
+        saveData();
+//        if (instance == null) return;
+//        try {
+//            FileOutputStream fos = instance.context.openFileOutput(
+//                    PersistentData.PERTISTENT_DATA_FILENAME, Context.MODE_PRIVATE);
+//            ObjectOutputStream os = new ObjectOutputStream(fos);
+//            os.close();
+//            fos.close();
+//            Log.e(className, "nuked data");
+//        } catch (IOException e) {
+//            Log.e(className, "couldn't nuke data");
+//            e.printStackTrace();
+//        }
     }
 
     public ArrayList<Item> getGroceryItems() {
@@ -279,7 +300,7 @@ public class Model extends Observable {
 
     public void logout(){
         token ="";
-        saveData();
+        nukeData();
     }
 
     public int getRecipeOffset() {
