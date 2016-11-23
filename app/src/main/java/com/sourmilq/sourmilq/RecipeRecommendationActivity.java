@@ -3,6 +3,7 @@ package com.sourmilq.sourmilq;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import com.sourmilq.sourmilq.Adapters.RecipeRecyclerViewAdapter;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.DataModel.Recipe;
+import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 import java.util.ArrayList;
 
@@ -111,9 +113,13 @@ public class RecipeRecommendationActivity extends AppCompatActivity
         if (id == R.id.recipeRecommendations) {
 
         } else if (id == R.id.recipe) {
-            Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
-            startActivity(intent);
-            finish();
+            if(NetworkUtil.isConnected(getApplicationContext())) {
+                Intent intent = new Intent(RecipeRecommendationActivity.this, RecipeActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                Snackbar.make(findViewById(android.R.id.content), "No Internet, connect to access recipes", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
         } else if (id == R.id.logout) {
             model.logout();
             Intent intent = new Intent(RecipeRecommendationActivity.this, SplashScreenActivity.class);

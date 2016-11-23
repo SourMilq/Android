@@ -3,6 +3,7 @@ package com.sourmilq.sourmilq;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,7 @@ import com.sourmilq.sourmilq.Adapters.ItemTabsPagerAdapter;
 import com.sourmilq.sourmilq.DataModel.Model;
 import com.sourmilq.sourmilq.Fragments.GroceryListItemsFragment;
 import com.sourmilq.sourmilq.Fragments.PantryItemsFragment;
+import com.sourmilq.sourmilq.Utilities.NetworkUtil;
 
 public class ItemsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -97,13 +99,21 @@ public class ItemsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.recipeRecommendations) {
-            Intent intent = new Intent(ItemsActivity.this, RecipeRecommendationActivity.class);
-            startActivity(intent);
-            finish();
+            if(NetworkUtil.isConnected(getApplicationContext())) {
+                Intent intent = new Intent(ItemsActivity.this, RecipeRecommendationActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                Snackbar.make(findViewById(android.R.id.content), "No Internet, connect to access recipes recommendations", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
         } else if (id == R.id.recipe) {
-            Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
-            startActivity(intent);
-            finish();
+            if(NetworkUtil.isConnected(getApplicationContext())) {
+                Intent intent = new Intent(ItemsActivity.this, RecipeActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                Snackbar.make(findViewById(android.R.id.content), "No Internet, connect to access recipes", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
         } else if (id == R.id.logout) {
             model.logout();
             Intent intent = new Intent(ItemsActivity.this, SplashScreenActivity.class);
